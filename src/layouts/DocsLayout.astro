@@ -11,7 +11,7 @@ const { title, description } = Astro.props;
 
 <BaseLayout title={`${title} - Ruby Classifier`} description={description}>
   <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-    <article class="prose prose-gray max-w-none prose-headings:font-semibold prose-a:text-ruby prose-a:no-underline hover:prose-a:underline prose-code:bg-gray-100 prose-code:px-1 prose-code:py-0.5 prose-code:rounded prose-code:before:content-none prose-code:after:content-none prose-pre:bg-gray-900">
+    <article class="prose prose-gray max-w-none prose-headings:font-semibold prose-a:text-ruby prose-a:no-underline hover:prose-a:underline prose-code:bg-gray-100 prose-code:px-1 prose-code:py-0.5 prose-code:rounded prose-code:before:content-none prose-code:after:content-none prose-pre:bg-gray-900 [&_pre_code]:bg-transparent [&_pre_code]:p-0">
       <slot />
     </article>
   </div>
