@@ -227,5 +227,5 @@ end
 ## Next Steps
 
 - [Document Categorizer](/docs/tutorials/document-classifier) - Classify documents into multiple categories
-- [Save and Load Models](/docs/guides/bayes/persistence) - Production persistence strategies
+- [Save and Load Models](/docs/guides/persistence/basics) - Production persistence strategies
 - [Performance Tuning](/docs/guides/production/performance) - Optimize for high-volume classification

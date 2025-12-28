@@ -144,5 +144,5 @@ sentiment.classify "Complete garbage, don't buy"
 ## Next Steps
 
 - [Training Strategies](/docs/guides/bayes/training) - Best practices for training data
-- [Persistence](/docs/guides/bayes/persistence) - Save and load trained classifiers
+- [Persistence](/docs/guides/persistence/basics) - Save and load trained classifiers
 - [Performance](/docs/guides/production/performance) - Optimize for production use
