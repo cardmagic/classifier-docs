@@ -16,8 +16,8 @@ require 'classifier'
 
 # Create and train a classifier
 classifier = Classifier::Bayes.new 'Spam', 'Ham'
-classifier.train_spam "Buy cheap products now!"
-classifier.train_ham "Meeting scheduled for tomorrow"
+classifier.train(spam: "Buy cheap products now!")
+classifier.train(ham: "Meeting scheduled for tomorrow")
 
 # Configure storage
 classifier.storage = Classifier::Storage::File.new(path: "spam_filter.json")
@@ -108,11 +108,11 @@ classifier.storage  # => nil
 The classifier tracks whether it has unsaved changes:
 
 ```ruby
-classifier = Classifier::Bayes.new 'A', 'B'
+classifier = Classifier::Bayes.new :a, :b
 classifier.dirty?
 # => false
 
-classifier.train_a "some text"
+classifier.train(a: "some text")
 classifier.dirty?
 # => true
 
@@ -126,7 +126,7 @@ classifier.dirty?
 Discard in-memory changes and reload from storage:
 
 ```ruby
-classifier.train_spam "new training data"
+classifier.train(spam: "new training data")
 classifier.dirty?
 # => true
 
@@ -336,7 +336,7 @@ RSpec.describe SpamFilter do
   end
 
   it "persists training" do
-    classifier.train_spam "buy now"
+    classifier.train(spam: "buy now")
     classifier.save
 
     loaded = Classifier::Bayes.load(storage: storage)
@@ -366,9 +366,9 @@ The persistence API is identical for Bayes and LSI:
 
 ```ruby
 # Bayes
-bayes = Classifier::Bayes.new 'A', 'B'
+bayes = Classifier::Bayes.new :a, :b
 bayes.storage = Classifier::Storage::File.new(path: "bayes.json")
-bayes.train_a "text"
+bayes.train(a: "text")
 bayes.save
 
 # LSI

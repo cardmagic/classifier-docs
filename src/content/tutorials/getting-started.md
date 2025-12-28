@@ -45,13 +45,13 @@ require 'classifier'
 classifier = Classifier::Bayes.new 'Spam', 'Ham'
 
 # Train it with some examples
-classifier.train_spam "Get rich quick! Buy now!"
-classifier.train_spam "You've won a million dollars!"
-classifier.train_spam "Click here for free stuff"
+classifier.train(spam: "Get rich quick! Buy now!")
+classifier.train(spam: "You've won a million dollars!")
+classifier.train(spam: "Click here for free stuff")
 
-classifier.train_ham "Meeting tomorrow at 10am"
-classifier.train_ham "Please review the attached document"
-classifier.train_ham "Thanks for your email"
+classifier.train(ham: "Meeting tomorrow at 10am")
+classifier.train(ham: "Please review the attached document")
+classifier.train(ham: "Thanks for your email")
 
 # Now classify some new text
 puts classifier.classify "Claim your free prize today!"
@@ -102,8 +102,14 @@ Now that you have a basic classifier working, explore these topics:
 # Create classifier
 classifier = Classifier::Bayes.new 'Category1', 'Category2'
 
-# Train (two equivalent ways)
-classifier.train 'Category1', "example text"
+# Train with keyword arguments (recommended)
+classifier.train(category1: "example text")
+
+# Batch train with arrays
+classifier.train(category1: ["text 1", "text 2"], category2: ["text 3"])
+
+# Legacy APIs (still work)
+classifier.train :Category1, "example text"
 classifier.train_category1 "example text"
 
 # Classify

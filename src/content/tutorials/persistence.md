@@ -24,7 +24,7 @@ Without persistence, you'd need to retrain on every app restart:
 # This runs every time your app starts - slow!
 classifier = Classifier::Bayes.new 'Positive', 'Negative'
 1000.times do |i|
-  classifier.train_positive training_data[i]
+  classifier.train(positive: training_data[i])
 end
 ```
 
@@ -45,17 +45,17 @@ require 'classifier'
 # Create and train the classifier
 classifier = Classifier::Bayes.new 'Tech', 'Sports', 'Politics'
 
-classifier.train_tech "New JavaScript framework released today"
-classifier.train_tech "Apple announces new MacBook Pro"
-classifier.train_tech "Python 4.0 features announced"
+classifier.train(tech: "New JavaScript framework released today")
+classifier.train(tech: "Apple announces new MacBook Pro")
+classifier.train(tech: "Python 4.0 features announced")
 
-classifier.train_sports "Lakers win championship game"
-classifier.train_sports "World Cup finals draw huge crowd"
-classifier.train_sports "Tennis star wins grand slam"
+classifier.train(sports: "Lakers win championship game")
+classifier.train(sports: "World Cup finals draw huge crowd")
+classifier.train(sports: "Tennis star wins grand slam")
 
-classifier.train_politics "Senate passes new legislation"
-classifier.train_politics "Election results announced"
-classifier.train_politics "New policy affects healthcare"
+classifier.train(politics: "Senate passes new legislation")
+classifier.train(politics: "Election results announced")
+classifier.train(politics: "New policy affects healthcare")
 
 # Configure file storage
 classifier.storage = Classifier::Storage::File.new(path: "news_classifier.json")
@@ -162,13 +162,13 @@ manager = ModelManager.new(models_dir: "trained_models")
 unless manager.exists?("sentiment")
   classifier = Classifier::Bayes.new 'Positive', 'Negative'
 
-  classifier.train_positive "I love this product!"
-  classifier.train_positive "Excellent service"
-  classifier.train_positive "Highly recommended"
+  classifier.train(positive: "I love this product!")
+  classifier.train(positive: "Excellent service")
+  classifier.train(positive: "Highly recommended")
 
-  classifier.train_negative "Terrible experience"
-  classifier.train_negative "Waste of money"
-  classifier.train_negative "Very disappointed"
+  classifier.train(negative: "Terrible experience")
+  classifier.train(negative: "Waste of money")
+  classifier.train(negative: "Very disappointed")
 
   manager.save(classifier, "sentiment")
 end
@@ -188,13 +188,13 @@ puts sentiment.classify("Total garbage")
 The classifier tracks whether you have unsaved changes:
 
 ```ruby
-classifier = Classifier::Bayes.new 'A', 'B'
+classifier = Classifier::Bayes.new :a, :b
 classifier.storage = Classifier::Storage::File.new(path: "model.json")
 
 classifier.dirty?
 # => false
 
-classifier.train_a "new training data"
+classifier.train(a: "new training data")
 classifier.dirty?
 # => true
 
@@ -230,8 +230,8 @@ class ClassifierTest < Minitest::Test
   end
 
   def test_persistence_roundtrip
-    @classifier.train_spam "Buy now!"
-    @classifier.train_ham "Meeting at 3pm"
+    @classifier.train(spam: "Buy now!")
+    @classifier.train(ham: "Meeting at 3pm")
     @classifier.save
 
     # Load into a new instance
@@ -244,7 +244,7 @@ class ClassifierTest < Minitest::Test
   def test_dirty_tracking
     refute @classifier.dirty?
 
-    @classifier.train_spam "test"
+    @classifier.train(spam: "test")
     assert @classifier.dirty?
 
     @classifier.save
@@ -291,8 +291,7 @@ class SentimentAPI
   end
 
   def train(text, sentiment)
-    sentiment = sentiment.capitalize
-    @classifier.train(sentiment, text)
+    @classifier.train(sentiment.downcase.to_sym => text)
     puts "Trained: #{sentiment}"
   end
 
@@ -312,25 +311,25 @@ class SentimentAPI
 
   def seed_training_data
     # Positive
-    @classifier.train_positive "I love this!"
-    @classifier.train_positive "Excellent work"
-    @classifier.train_positive "This is fantastic"
-    @classifier.train_positive "Great job, well done"
-    @classifier.train_positive "Amazing results"
+    @classifier.train(positive: "I love this!")
+    @classifier.train(positive: "Excellent work")
+    @classifier.train(positive: "This is fantastic")
+    @classifier.train(positive: "Great job, well done")
+    @classifier.train(positive: "Amazing results")
 
     # Negative
-    @classifier.train_negative "This is terrible"
-    @classifier.train_negative "I hate it"
-    @classifier.train_negative "Worst experience ever"
-    @classifier.train_negative "Completely disappointed"
-    @classifier.train_negative "Total waste of time"
+    @classifier.train(negative: "This is terrible")
+    @classifier.train(negative: "I hate it")
+    @classifier.train(negative: "Worst experience ever")
+    @classifier.train(negative: "Completely disappointed")
+    @classifier.train(negative: "Total waste of time")
 
     # Neutral
-    @classifier.train_neutral "It's okay I guess"
-    @classifier.train_neutral "Nothing special"
-    @classifier.train_neutral "Average performance"
-    @classifier.train_neutral "Could be better or worse"
-    @classifier.train_neutral "No strong feelings"
+    @classifier.train(neutral: "It's okay I guess")
+    @classifier.train(neutral: "Nothing special")
+    @classifier.train(neutral: "Average performance")
+    @classifier.train(neutral: "Could be better or worse")
+    @classifier.train(neutral: "No strong feelings")
   end
 
   def calculate_confidence(scores, category)

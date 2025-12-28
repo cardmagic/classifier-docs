@@ -52,11 +52,11 @@ class SpamFilter
   end
 
   def train_spam(text)
-    @classifier.train_spam(text)
+    @classifier.train(spam: text)
   end
 
   def train_ham(text)
-    @classifier.train_ham(text)
+    @classifier.train(ham: text)
   end
 
   def spam?(text)

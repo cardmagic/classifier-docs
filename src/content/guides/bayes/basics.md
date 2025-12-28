@@ -45,14 +45,20 @@ classifier = Classifier::Bayes.new 'Tech', 'Sports', 'Politics'
 Train the classifier by providing examples for each category:
 
 ```ruby
-# Method 1: Using the train method
-classifier.train 'Tech', 'New JavaScript framework released'
-classifier.train 'Sports', 'Team wins championship game'
+# Keyword arguments (recommended)
+classifier.train(tech: 'New JavaScript framework released')
+classifier.train(sports: 'Team wins championship game')
+classifier.train(politics: 'Senate passes new legislation')
 
-# Method 2: Using dynamic methods (more readable)
-classifier.train_tech 'Apple announces new MacBook'
-classifier.train_sports 'Soccer player signs new contract'
-classifier.train_politics 'Senate passes new legislation'
+# Batch training with arrays
+classifier.train(
+  tech: ['Apple announces new MacBook', 'Python 4.0 features announced'],
+  sports: ['Soccer player signs new contract', 'Team wins finals']
+)
+
+# Legacy APIs (still work)
+classifier.train :Tech, 'Example text'
+classifier.train_tech 'Example text'
 ```
 
 ### Training Tips
@@ -110,13 +116,13 @@ percentages = normalized.transform_values { |v| (v / total * 100).round(1) }
 
 ```ruby
 # Enable automatic stemming (on by default)
-classifier = Classifier::Bayes.new 'A', 'B', enable_stemmer: true
+classifier = Classifier::Bayes.new :a, :b, enable_stemmer: true
 
 # Use custom language for stemming
-classifier = Classifier::Bayes.new 'A', 'B', language: 'fr'
+classifier = Classifier::Bayes.new :a, :b, language: 'fr'
 
 # Disable threshold (classify everything, even low confidence)
-classifier = Classifier::Bayes.new 'A', 'B', enable_threshold: false
+classifier = Classifier::Bayes.new :a, :b, enable_threshold: false
 ```
 
 ## Example: Sentiment Analyzer
@@ -125,13 +131,19 @@ classifier = Classifier::Bayes.new 'A', 'B', enable_threshold: false
 sentiment = Classifier::Bayes.new 'Positive', 'Negative'
 
 # Train with examples
-sentiment.train_positive "I love this product!"
-sentiment.train_positive "Excellent service, highly recommend"
-sentiment.train_positive "Best purchase I've ever made"
+sentiment.train(positive: "I love this product!")
+sentiment.train(positive: "Excellent service, highly recommend")
+sentiment.train(positive: "Best purchase I've ever made")
 
-sentiment.train_negative "Terrible experience, avoid"
-sentiment.train_negative "Waste of money"
-sentiment.train_negative "Disappointing and frustrating"
+sentiment.train(negative: "Terrible experience, avoid")
+sentiment.train(negative: "Waste of money")
+sentiment.train(negative: "Disappointing and frustrating")
+
+# Or batch train
+sentiment.train(
+  positive: ["Amazing quality!", "Highly recommended"],
+  negative: ["Total disappointment", "Don't waste your money"]
+)
 
 # Classify new reviews
 sentiment.classify "This is amazing!"
