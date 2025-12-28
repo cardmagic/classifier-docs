@@ -30,7 +30,7 @@ Create a `Gemfile`:
 ```ruby
 source 'https://rubygems.org'
 
-gem 'classifier-reborn'
+gem 'classifier'
 ```
 
 Install dependencies:
@@ -44,7 +44,7 @@ bundle install
 Create `spam_filter.rb`:
 
 ```ruby
-require 'classifier-reborn'
+require 'classifier'
 
 class SpamFilter
   def initialize

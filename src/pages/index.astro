@@ -99,7 +99,7 @@ import CodeExample from '../components/CodeExample.astro';
 
       <div class="grid lg:grid-cols-2 gap-8">
         <CodeExample title="Train a Classifier" description="Create categories and train with example text">
-          <Fragment set:html={`<span class="text-pink-400">require</span> <span class="text-green-400">'classifier-reborn'</span>
+          <Fragment set:html={`<span class="text-pink-400">require</span> <span class="text-green-400">'classifier'</span>
 
 classifier = <span class="text-yellow-400">Classifier::Bayes</span>.new <span class="text-green-400">'Spam'</span>, <span class="text-green-400">'Ham'</span>
 
@@ -156,11 +156,11 @@ lsi.classify <span class="text-green-400">"Installing bundler gem"</span>
       <div class="max-w-xl mx-auto">
         <div class="bg-gray-900 rounded-lg p-4 text-left">
           <code class="text-gray-100 font-mono">
-            <span class="text-gray-500">$</span> gem install classifier-reborn
+            <span class="text-gray-500">$</span> gem install classifier
           </code>
         </div>
         <p class="text-gray-600 mt-4">
-          Or add to your Gemfile: <code class="bg-gray-100 px-2 py-1 rounded text-sm">gem 'classifier-reborn'</code>
+          Or add to your Gemfile: <code class="bg-gray-100 px-2 py-1 rounded text-sm">gem 'classifier'</code>
         </p>
       </div>
     </div>

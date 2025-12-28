@@ -19,13 +19,13 @@ This tutorial will get you up and running with the classifier gem in under 5 min
 Install the gem directly:
 
 ```bash
-gem install classifier-reborn
+gem install classifier
 ```
 
 Or add it to your Gemfile:
 
 ```ruby
-gem 'classifier-reborn'
+gem 'classifier'
 ```
 
 Then run:
@@ -39,7 +39,7 @@ bundle install
 Let's build a simple spam detector. Create a file called `spam_detector.rb`:
 
 ```ruby
-require 'classifier-reborn'
+require 'classifier'
 
 # Create a classifier with two categories
 classifier = Classifier::Bayes.new 'Spam', 'Ham'

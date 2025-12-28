@@ -34,7 +34,7 @@ The "naive" assumption is that words are independent of each other, which isn't 
 ## Creating a Classifier
 
 ```ruby
-require 'classifier-reborn'
+require 'classifier'
 
 # Create with any number of categories
 classifier = Classifier::Bayes.new 'Tech', 'Sports', 'Politics'

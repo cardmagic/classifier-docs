@@ -20,7 +20,7 @@ This means "dog" and "canine" will be considered similar even if they never appe
 ## Creating an LSI Index
 
 ```ruby
-require 'classifier-reborn'
+require 'classifier'
 
 lsi = Classifier::LSI.new
 ```
