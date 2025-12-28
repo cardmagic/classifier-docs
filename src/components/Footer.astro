@@ -1,0 +1,24 @@
+---
+const currentYear = new Date().getFullYear();
+---
+
+<footer class="border-t border-gray-200 bg-gray-50">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+      <div class="flex items-center gap-6 text-sm text-gray-600">
+        <a href="https://github.com/cardmagic/classifier" class="hover:text-ruby transition-colors">
+          Source
+        </a>
+        <a href="/docs" class="hover:text-ruby transition-colors">
+          Documentation
+        </a>
+        <a href="https://github.com/cardmagic/classifier/blob/master/LICENSE" class="hover:text-ruby transition-colors">
+          License
+        </a>
+      </div>
+      <p class="text-sm text-gray-500">
+        &copy; {currentYear} Lucas Carlson. Released under the LGPL license.
+      </p>
+    </div>
+  </div>
+</footer>

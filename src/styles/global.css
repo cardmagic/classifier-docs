@@ -1,0 +1,9 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+@theme {
+  --color-ruby: #CC0000;
+  --color-ruby-dark: #990000;
+  --color-ruby-light: #FF6666;
+  --font-family-mono: "JetBrains Mono", "Fira Code", ui-monospace, monospace;
+}

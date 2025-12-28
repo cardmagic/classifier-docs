@@ -1,0 +1,110 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const tutorials = await getCollection('tutorials');
+const guides = await getCollection('guides');
+
+const sortedTutorials = tutorials.sort((a, b) => a.data.order - b.data.order);
+const guidesByCategory = guides.reduce((acc, guide) => {
+  const cat = guide.data.category;
+  if (!acc[cat]) acc[cat] = [];
+  acc[cat].push(guide);
+  return acc;
+}, {} as Record<string, typeof guides>);
+
+Object.values(guidesByCategory).forEach(arr => arr.sort((a, b) => a.data.order - b.data.order));
+
+const categoryOrder = ['start', 'bayes', 'lsi', 'extensions', 'production'];
+const categoryLabels: Record<string, string> = {
+  start: 'Start Here',
+  bayes: 'Bayesian Classifier',
+  lsi: 'LSI (Semantic Analysis)',
+  extensions: 'Extensions',
+  production: 'Production',
+};
+
+const difficultyColors: Record<string, string> = {
+  beginner: 'bg-green-100 text-green-800',
+  intermediate: 'bg-yellow-100 text-yellow-800',
+  advanced: 'bg-red-100 text-red-800',
+};
+---
+
+<BaseLayout title="Documentation - Ruby Classifier">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div class="text-center mb-12">
+      <h1 class="text-4xl font-bold text-gray-900 mb-4">Documentation</h1>
+      <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+        Learn how to use the classifier gem for text classification and semantic analysis.
+      </p>
+    </div>
+
+    <!-- Tutorials Section -->
+    <section class="mb-16">
+      <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+        <svg class="w-6 h-6 text-ruby" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+        </svg>
+        Tutorials
+      </h2>
+      <p class="text-gray-600 mb-6">Step-by-step guides to build real projects.</p>
+
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {sortedTutorials.map(tutorial => (
+          <a
+            href={`/docs/tutorials/${tutorial.slug}`}
+            class="block p-6 bg-white border border-gray-200 rounded-lg hover:border-ruby hover:shadow-md transition-all group"
+          >
+            <div class="flex items-center gap-2 mb-3">
+              <span class={`text-xs font-medium px-2 py-0.5 rounded ${difficultyColors[tutorial.data.difficulty]}`}>
+                {tutorial.data.difficulty}
+              </span>
+            </div>
+            <h3 class="font-semibold text-gray-900 group-hover:text-ruby transition-colors mb-2">
+              {tutorial.data.title}
+            </h3>
+            <p class="text-sm text-gray-600">{tutorial.data.description}</p>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <!-- Guides Section -->
+    <section>
+      <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+        <svg class="w-6 h-6 text-ruby" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+        </svg>
+        Guides
+      </h2>
+      <p class="text-gray-600 mb-6">In-depth reference documentation.</p>
+
+      <div class="space-y-8">
+        {categoryOrder.map(category => guidesByCategory[category] && (
+          <div>
+            <h3 class="text-lg font-semibold text-gray-800 mb-4">{categoryLabels[category]}</h3>
+            <div class="grid md:grid-cols-2 gap-4">
+              {guidesByCategory[category].map(guide => (
+                <a
+                  href={`/docs/guides/${guide.slug}`}
+                  class="flex items-start gap-3 p-4 bg-white border border-gray-200 rounded-lg hover:border-ruby hover:shadow-sm transition-all group"
+                >
+                  <svg class="w-5 h-5 text-gray-400 group-hover:text-ruby mt-0.5 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                  </svg>
+                  <div>
+                    <h4 class="font-medium text-gray-900 group-hover:text-ruby transition-colors">
+                      {guide.data.title}
+                    </h4>
+                    <p class="text-sm text-gray-600">{guide.data.description}</p>
+                  </div>
+                </a>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+  </div>
+</BaseLayout>

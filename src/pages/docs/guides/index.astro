@@ -1,0 +1,74 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const guides = await getCollection('guides');
+
+const guidesByCategory = guides.reduce((acc, guide) => {
+  const cat = guide.data.category;
+  if (!acc[cat]) acc[cat] = [];
+  acc[cat].push(guide);
+  return acc;
+}, {} as Record<string, typeof guides>);
+
+Object.values(guidesByCategory).forEach(arr => arr.sort((a, b) => a.data.order - b.data.order));
+
+const categoryOrder = ['start', 'bayes', 'lsi', 'extensions', 'production'];
+const categoryLabels: Record<string, string> = {
+  start: 'Start Here',
+  bayes: 'Bayesian Classifier',
+  lsi: 'LSI (Semantic Analysis)',
+  extensions: 'Extensions',
+  production: 'Production',
+};
+const categoryDescriptions: Record<string, string> = {
+  start: 'Installation and quick start',
+  bayes: 'Naive Bayes classification for categorizing text',
+  lsi: 'Latent Semantic Indexing for semantic search and similarity',
+  extensions: 'Tokenization, stemming, and customization',
+  production: 'Performance, caching, and deployment',
+};
+---
+
+<BaseLayout title="Guides - Ruby Classifier">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div class="mb-8">
+      <a href="/docs" class="text-sm text-gray-500 hover:text-ruby transition-colors">
+        ← Back to Docs
+      </a>
+    </div>
+
+    <h1 class="text-4xl font-bold text-gray-900 mb-4">Guides</h1>
+    <p class="text-xl text-gray-600 mb-12">
+      In-depth reference documentation for the classifier gem.
+    </p>
+
+    <div class="space-y-12">
+      {categoryOrder.map(category => guidesByCategory[category] && (
+        <section>
+          <h2 class="text-2xl font-bold text-gray-900 mb-2">{categoryLabels[category]}</h2>
+          <p class="text-gray-600 mb-6">{categoryDescriptions[category]}</p>
+
+          <div class="space-y-3">
+            {guidesByCategory[category].map(guide => (
+              <a
+                href={`/docs/guides/${guide.slug}`}
+                class="flex items-center justify-between p-4 bg-white border border-gray-200 rounded-lg hover:border-ruby hover:shadow-sm transition-all group"
+              >
+                <div>
+                  <h3 class="font-medium text-gray-900 group-hover:text-ruby transition-colors">
+                    {guide.data.title}
+                  </h3>
+                  <p class="text-sm text-gray-600">{guide.data.description}</p>
+                </div>
+                <svg class="w-5 h-5 text-gray-400 group-hover:text-ruby transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                </svg>
+              </a>
+            ))}
+          </div>
+        </section>
+      ))}
+    </div>
+  </div>
+</BaseLayout>
