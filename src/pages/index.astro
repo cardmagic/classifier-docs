@@ -8,9 +8,9 @@ import CodeExample from '../components/CodeExample.astro';
   <section class="bg-gradient-to-b from-gray-50 to-white py-20">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
       <div class="inline-flex items-center gap-2 bg-ruby/10 text-ruby px-3 py-1 rounded-full text-sm font-medium mb-6">
-        <span>v2.2.0</span>
+        <span>v2.3.0</span>
         <span class="text-ruby/60">•</span>
-        <span>Bayes + LSI</span>
+        <span>Bayes + LSI + kNN + TF-IDF</span>
       </div>
 
       <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 mb-6">
@@ -19,7 +19,7 @@ import CodeExample from '../components/CodeExample.astro';
       </h1>
 
       <p class="text-xl text-gray-600 max-w-2xl mx-auto mb-10">
-        Bayesian classification and Latent Semantic Indexing for categorizing documents,
+        Bayesian, LSI, kNN, and TF-IDF algorithms for categorizing documents,
         detecting spam, analyzing sentiment, and building semantic search.
       </p>
 
@@ -67,24 +67,24 @@ import CodeExample from '../components/CodeExample.astro';
           <p class="text-gray-600 text-sm">Find related documents using Latent Semantic Indexing and SVD.</p>
         </a>
 
-        <a href="/docs/guides/lsi/basics" class="text-center group">
+        <a href="/docs/guides/knn/basics" class="text-center group">
           <div class="w-12 h-12 bg-ruby/10 rounded-lg flex items-center justify-center mx-auto mb-4 group-hover:bg-ruby/20 transition-colors">
             <svg class="w-6 h-6 text-ruby" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
             </svg>
           </div>
-          <h3 class="font-semibold text-gray-900 mb-2 group-hover:text-ruby transition-colors">Native Extensions</h3>
-          <p class="text-gray-600 text-sm">5-50x faster matrix operations with optional C extensions.</p>
+          <h3 class="font-semibold text-gray-900 mb-2 group-hover:text-ruby transition-colors">k-Nearest Neighbors</h3>
+          <p class="text-gray-600 text-sm">Instance-based classification with interpretable neighbor results.</p>
         </a>
 
-        <a href="/docs/guides/persistence/basics" class="text-center group">
+        <a href="/docs/guides/tfidf/basics" class="text-center group">
           <div class="w-12 h-12 bg-ruby/10 rounded-lg flex items-center justify-center mx-auto mb-4 group-hover:bg-ruby/20 transition-colors">
             <svg class="w-6 h-6 text-ruby" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
             </svg>
           </div>
-          <h3 class="font-semibold text-gray-900 mb-2 group-hover:text-ruby transition-colors">Persistence Framework</h3>
-          <p class="text-gray-600 text-sm">Pluggable storage backends for files, memory, Redis, and custom stores.</p>
+          <h3 class="font-semibold text-gray-900 mb-2 group-hover:text-ruby transition-colors">TF-IDF Vectorizer</h3>
+          <p class="text-gray-600 text-sm">Transform text into weighted feature vectors for ML and search.</p>
         </a>
       </div>
     </div>
@@ -103,10 +103,15 @@ import CodeExample from '../components/CodeExample.astro';
 
 classifier = <span class="text-yellow-400">Classifier::Bayes</span>.new <span class="text-green-400">'Spam'</span>, <span class="text-green-400">'Ham'</span>
 
-classifier.train_spam <span class="text-green-400">"Buy cheap viagra now!!!"</span>
-classifier.train_spam <span class="text-green-400">"You've won $1,000,000!"</span>
-classifier.train_ham <span class="text-green-400">"Meeting tomorrow at 3pm"</span>
-classifier.train_ham <span class="text-green-400">"Project deadline reminder"</span>`} />
+<span class="text-gray-500"># Train with keyword arguments</span>
+classifier.train(<span class="text-cyan-400">spam:</span> <span class="text-green-400">"Buy cheap viagra now!!!"</span>)
+classifier.train(<span class="text-cyan-400">ham:</span> <span class="text-green-400">"Meeting tomorrow at 3pm"</span>)
+
+<span class="text-gray-500"># Or batch train multiple examples</span>
+classifier.train(
+  <span class="text-cyan-400">spam:</span> [<span class="text-green-400">"You won $1M!"</span>, <span class="text-green-400">"Free money!"</span>],
+  <span class="text-cyan-400">ham:</span> [<span class="text-green-400">"Project update"</span>, <span class="text-green-400">"Lunch tomorrow?"</span>]
+)`} />
         </CodeExample>
 
         <CodeExample title="Classify Text" description="Get the best category for new text">
@@ -124,24 +129,26 @@ classifier.classifications <span class="text-green-400">"Limited time offer"</sp
         <CodeExample title="Semantic Search with LSI" description="Find documents by meaning, not just keywords">
           <Fragment set:html={`lsi = <span class="text-yellow-400">Classifier::LSI</span>.new
 
-lsi.add_item doc1, <span class="text-green-400">"Ruby programming language"</span>
-lsi.add_item doc2, <span class="text-green-400">"Python snake reptile"</span>
-lsi.add_item doc3, <span class="text-green-400">"Rails web framework Ruby"</span>
+<span class="text-gray-500"># Add documents with categories</span>
+lsi.add(<span class="text-green-400">"Ruby"</span> => <span class="text-green-400">"Ruby programming language"</span>)
+lsi.add(<span class="text-green-400">"Python"</span> => <span class="text-green-400">"Python snake reptile"</span>)
+lsi.add(<span class="text-green-400">"Ruby"</span> => <span class="text-green-400">"Rails web framework"</span>)
 
 lsi.search <span class="text-green-400">"web development with Ruby"</span>
-<span class="text-gray-500"># =&gt; [doc3, doc1]  # Semantically related results</span>`} />
+<span class="text-gray-500"># =&gt; ["Rails web framework", "Ruby programming..."]</span>`} />
         </CodeExample>
 
-        <CodeExample title="Find Related Documents" description="Discover similar content automatically">
-          <Fragment set:html={`lsi.find_related doc1, <span class="text-cyan-400">3</span>
-<span class="text-gray-500"># =&gt; [doc3, ...]  # Documents similar to doc1</span>
+        <CodeExample title="k-Nearest Neighbors" description="Instance-based classification with interpretable results">
+          <Fragment set:html={`knn = <span class="text-yellow-400">Classifier::KNN</span>.new(<span class="text-cyan-400">k:</span> <span class="text-cyan-400">3</span>)
 
-<span class="text-gray-500"># Classify by learned categories</span>
-lsi.add_item <span class="text-green-400">"Ruby gem tutorial"</span>, <span class="text-cyan-400">:ruby</span>
-lsi.add_item <span class="text-green-400">"Python pip package"</span>, <span class="text-cyan-400">:python</span>
+knn.add(
+  <span class="text-cyan-400">spam:</span> [<span class="text-green-400">"Buy now!"</span>, <span class="text-green-400">"You won!"</span>],
+  <span class="text-cyan-400">ham:</span> [<span class="text-green-400">"Meeting at 3pm"</span>, <span class="text-green-400">"Review doc"</span>]
+)
 
-lsi.classify <span class="text-green-400">"Installing bundler gem"</span>
-<span class="text-gray-500"># =&gt; :ruby</span>`} />
+result = knn.classify_with_neighbors <span class="text-green-400">"Free prize"</span>
+result[<span class="text-cyan-400">:category</span>]    <span class="text-gray-500"># =&gt; "spam"</span>
+result[<span class="text-cyan-400">:confidence</span>]  <span class="text-gray-500"># =&gt; 0.85</span>`} />
         </CodeExample>
       </div>
     </div>
@@ -184,7 +191,7 @@ lsi.classify <span class="text-green-400">"Installing bundler gem"</span>
             Guides
           </h3>
           <p class="text-gray-400">
-            In-depth reference documentation for Bayes, LSI, and more.
+            In-depth reference for Bayes, LSI, kNN, TF-IDF, and more.
           </p>
         </a>
 

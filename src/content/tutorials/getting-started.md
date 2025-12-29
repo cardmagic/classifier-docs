@@ -95,6 +95,8 @@ Now that you have a basic classifier working, explore these topics:
 - [Build a Complete Spam Filter](/docs/tutorials/spam-filter) - A production-ready email classifier
 - [Bayes Basics Guide](/docs/guides/bayes/basics) - Deep dive into how Bayesian classification works
 - [LSI for Semantic Search](/docs/guides/lsi/basics) - Find related documents using meaning, not just keywords
+- [kNN Classification](/docs/guides/knn/basics) - Instance-based classification with interpretable results
+- [TF-IDF Vectorizer](/docs/guides/tfidf/basics) - Transform text into weighted feature vectors
 
 ## Quick Reference
 

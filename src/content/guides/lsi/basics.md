@@ -27,19 +27,24 @@ lsi = Classifier::LSI.new
 
 ## Adding Documents
 
-Each item needs content (the text to analyze) and optionally a key (for retrieval):
+Use hash-style syntax to add documents with categories:
 
 ```ruby
-# Add with a key
-lsi.add_item "Ruby is a dynamic programming language", :ruby_doc
+# Add with category => item syntax (recommended)
+lsi.add("Programming" => "Ruby is a dynamic programming language")
+lsi.add("Programming" => "Python emphasizes code readability")
 
-# Add with the text itself as the key
-lsi.add_item "Python emphasizes code readability"
+# Add multiple items to the same category
+lsi.add("Frameworks" => ["Rails is a web framework", "Django is a Python web framework"])
 
-# Add with a category for classification
-lsi.add_item "Rails is a web framework", :frameworks
-lsi.add_item "Django is a Python web framework", :frameworks
-lsi.add_item "React is a JavaScript library", :libraries
+# Add to multiple categories at once
+lsi.add(
+  "Frameworks" => ["Rails is a web framework", "Django is for Python"],
+  "Libraries" => "React is a JavaScript library"
+)
+
+# Legacy API (still works)
+lsi.add_item "Ruby is great", :ruby_doc
 ```
 
 ## Finding Related Documents
@@ -71,13 +76,15 @@ results = lsi.search "artificial intelligence methods", 2
 When you add items with categories, LSI can classify new content:
 
 ```ruby
-lsi.add_item "Defensive strategies in football", :sports
-lsi.add_item "Basketball playoff predictions", :sports
-lsi.add_item "Stock market analysis", :finance
-lsi.add_item "Investment portfolio strategies", :finance
+lsi.add("Sports" => ["Defensive strategies in football", "Basketball playoff predictions"])
+lsi.add("Finance" => ["Stock market analysis", "Investment portfolio strategies"])
 
 category = lsi.classify "The team's offensive lineup"
-# => :sports
+# => "Sports"
+
+# Get classification with confidence score
+result, confidence = lsi.classify_with_confidence "Investment tips"
+# => ["Finance", 0.89]
 ```
 
 ## Auto-Rebuild vs Manual Control
@@ -123,19 +130,20 @@ lsi.build_index
 ```ruby
 lsi = Classifier::LSI.new
 
-# Add your document library
-lsi.add_item "Introduction to Ruby programming", :ruby_intro
-lsi.add_item "Advanced Ruby metaprogramming", :ruby_advanced
-lsi.add_item "Getting started with Python", :python_intro
-lsi.add_item "Web development with Rails", :rails
-lsi.add_item "Django web framework guide", :django
+# Add your document library with categories
+lsi.add(
+  "Ruby" => ["Introduction to Ruby programming", "Advanced Ruby metaprogramming"],
+  "Python" => ["Getting started with Python", "Django web framework guide"],
+  "Web" => ["Web development with Rails", "Django web framework guide"]
+)
 
-# User just read the Ruby intro
-current_doc = :ruby_intro
+# Recommend documents similar to a query
+recommendations = lsi.find_related("Ruby programming basics", 3)
+# => ["Introduction to Ruby programming", "Advanced Ruby metaprogramming", ...]
 
-# Recommend similar documents
-recommendations = lsi.find_related(current_doc, 3)
-# => [:ruby_advanced, :rails, ...] - related by topic
+# Or search by keyword
+results = lsi.search("web framework", 2)
+# => ["Web development with Rails", "Django web framework guide"]
 ```
 
 ## Performance Notes
