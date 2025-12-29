@@ -193,6 +193,6 @@ Classifier::LSI.backend
 
 ## Next Steps
 
+- [LSI Advanced](/docs/guides/lsi/advanced) - Incremental LSI, SVD tuning, and performance optimization
 - [Streaming Training](/docs/tutorials/streaming-training) - Train on large corpora with progress tracking
 - [Persistence](/docs/guides/persistence/basics) - Save and load trained indices
-- [Performance](/docs/guides/production/performance) - Optimize for production use

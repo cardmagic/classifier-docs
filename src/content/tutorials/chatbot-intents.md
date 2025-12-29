@@ -383,20 +383,32 @@ Output:
 CHATBOT INTENT DETECTION
 ============================================================
 
-User: Hi there!
-Intent: greeting (92.1%)
-Bot: Hello! How can I help you today?
-Matched: hi there (98.5%)
+User: I need help with something
+Intent: help (100.0%)
+Bot: I can help with orders, refunds, account issues, and more. What do you need?
+Matched: I need help (169.7%)
 
 User: Where's my package?
-Intent: order_status (87.4%)
+Intent: order_status (88.4%)
 Bot: I'll look up your order. What's your order number?
-Matched: where is my order (91.2%)
+Matched: where is my order (75.4%)
+
+User: I want my money back
+Intent: refund (100.0%)
+Bot: I understand you want a refund. Let me connect you with our returns team.
+Matched: can I get my money back (68.9%)
 
 User: asdfghjkl
 Intent: fallback (0%)
 Bot: I'm not sure I understand. Could you rephrase that?
+
+User: bye bye
+Intent: farewell (79.8%)
+Bot: Goodbye! Have a great day!
+Matched: bye (177.7%)
 ```
+
+> **Note**: Similarity percentages above 100% can occur with weighted kNN when multiple neighbors strongly agree on a category. The confidence scores reflect the combined weighted voting, not a simple similarity measure.
 
 ## Adding New Intents On-the-Fly
 
