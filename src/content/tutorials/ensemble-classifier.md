@@ -29,6 +29,8 @@ Different classifiers have different strengths:
 
 When they disagree, the ensemble can break ties intelligently. When they agree, confidence is high.
 
+**API Consistency**: Bayes, LogisticRegression, and kNN all share the same `train()` method, making it easy to build ensembles with uniform training code.
+
 ## Project Setup
 
 ```bash
@@ -72,16 +74,13 @@ class EnsembleClassifier
     @lsi = Classifier::LSI.new(auto_rebuild: false)
     @knn = Classifier::KNN.new(k: 5, weighted: true)
 
-    # Train each classifier
+    # Train each classifier with consistent API
+    # All three now support train() with keyword arguments
     data_by_category.each do |category, items|
       items = Array(items)
-
-      # Bayes
       @bayes.train(category.to_sym => items)
-
-      # LSI and kNN use same format
-      @lsi.add(category.to_s => items)
-      @knn.add(category.to_sym => items)
+      @lsi.add(category.to_s => items)  # LSI uses add (not a classifier per se)
+      @knn.train(category.to_sym => items)  # kNN now supports train() too
     end
 
     @lsi.build_index

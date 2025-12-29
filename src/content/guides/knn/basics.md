@@ -27,19 +27,29 @@ knn = Classifier::KNN.new(k: 3)  # Use 3 nearest neighbors
 
 ## Adding Examples
 
-Use hash-style syntax to add labeled examples:
+kNN supports two equivalent methods for adding labeled examples: `train` (consistent with Bayes and LogisticRegression) and `add` (kNN-specific terminology).
 
 ```ruby
-# Add single examples
+# Using train (consistent API across all classifiers)
+knn.train(spam: "Buy now! Limited offer!")
+knn.train(ham: "Meeting tomorrow at 3pm")
+
+# Using add (equivalent, kNN-specific terminology)
 knn.add(spam: "Buy now! Limited offer!")
 knn.add(ham: "Meeting tomorrow at 3pm")
 
+# Dynamic train methods (like Bayes)
+knn.train_spam "You've won a million dollars!"
+knn.train_ham "Thanks for your email"
+
 # Add multiple examples at once
-knn.add(
-  spam: ["You've won a million dollars!", "Click here for free stuff"],
-  ham: ["Please review the document", "Thanks for your email"]
+knn.train(
+  spam: ["Click here for free stuff", "Limited time offer!"],
+  ham: ["Please review the document", "See you tomorrow"]
 )
 ```
+
+The `train` method is an alias for `add`, so they work identically. Use `train` when you want consistent code that works with any classifier type.
 
 ## Classification
 
@@ -171,6 +181,35 @@ loaded = Classifier::KNN.load_from_file("reviews_classifier.json")
 # Or use storage backends
 knn.storage = Classifier::Storage::File.new(path: "classifier.json")
 knn.save
+```
+
+## API Consistency
+
+kNN shares a consistent API with Bayes and LogisticRegression, making it easy to swap classifiers:
+
+| Method | Bayes | LogisticRegression | kNN |
+|--------|-------|-------------------|-----|
+| `train(cat: text)` | ✓ | ✓ | ✓ |
+| `train_category(text)` | ✓ | ✓ | ✓ |
+| `classify(text)` → `String` | ✓ | ✓ | ✓ |
+| `categories` → `Array[String]` | ✓ | ✓ | ✓ |
+
+This means you can write classifier-agnostic code:
+
+```ruby
+def train_classifier(classifier, data)
+  data.each { |category, texts| classifier.train(category => texts) }
+end
+
+def evaluate(classifier, test_cases)
+  test_cases.count { |text, expected| classifier.classify(text) == expected }
+end
+
+# Works with any classifier
+[Classifier::Bayes.new(:a, :b), Classifier::KNN.new, Classifier::LogisticRegression.new(:a, :b)].each do |c|
+  train_classifier(c, training_data)
+  puts evaluate(c, test_data)
+end
 ```
 
 ## Next Steps
