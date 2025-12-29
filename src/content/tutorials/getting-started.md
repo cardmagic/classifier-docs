@@ -2,6 +2,7 @@
 title: "Getting Started"
 description: "Install the classifier gem and make your first classification in under 5 minutes."
 difficulty: beginner
+classifiers: [bayes]
 order: 1
 ---
 

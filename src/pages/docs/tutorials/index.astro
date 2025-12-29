@@ -10,6 +10,13 @@ const difficultyColors: Record<string, string> = {
   intermediate: 'bg-yellow-100 text-yellow-800',
   advanced: 'bg-red-100 text-red-800',
 };
+
+const classifierColors: Record<string, string> = {
+  bayes: 'bg-blue-100 text-blue-800',
+  lsi: 'bg-purple-100 text-purple-800',
+  knn: 'bg-orange-100 text-orange-800',
+  tfidf: 'bg-cyan-100 text-cyan-800',
+};
 ---
 
 <BaseLayout title="Tutorials - Ruby Classifier">
@@ -36,13 +43,18 @@ const difficultyColors: Record<string, string> = {
               {index + 1}
             </span>
             <div class="flex-1">
-              <div class="flex items-center gap-2 mb-2">
+              <div class="flex flex-wrap items-center gap-2 mb-2">
                 <h2 class="text-xl font-semibold text-gray-900 group-hover:text-ruby transition-colors">
                   {tutorial.data.title}
                 </h2>
                 <span class={`text-xs font-medium px-2 py-0.5 rounded ${difficultyColors[tutorial.data.difficulty]}`}>
                   {tutorial.data.difficulty}
                 </span>
+                {tutorial.data.classifiers?.map((classifier: string) => (
+                  <span class={`text-xs font-medium px-2 py-0.5 rounded ${classifierColors[classifier]}`}>
+                    {classifier.toUpperCase()}
+                  </span>
+                ))}
               </div>
               <p class="text-gray-600">{tutorial.data.description}</p>
             </div>

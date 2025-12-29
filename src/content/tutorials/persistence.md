@@ -2,7 +2,8 @@
 title: "Save and Load Classifiers"
 description: "Persist trained classifiers to disk and reload them for production use."
 difficulty: beginner
-order: 3
+classifiers: [bayes, lsi, knn]
+order: 4
 ---
 
 # Save and Load Classifiers

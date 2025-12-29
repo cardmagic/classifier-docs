@@ -2,6 +2,7 @@
 title: "Build a Spam Filter"
 description: "Create a production-ready email spam classifier with training, persistence, and evaluation."
 difficulty: beginner
+classifiers: [bayes]
 order: 2
 ---
 

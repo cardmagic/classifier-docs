@@ -6,6 +6,7 @@ const tutorials = defineCollection({
     title: z.string(),
     description: z.string(),
     difficulty: z.enum(['beginner', 'intermediate', 'advanced']),
+    classifiers: z.array(z.enum(['bayes', 'lsi', 'knn', 'tfidf'])).optional(),
     order: z.number(),
   }),
 });

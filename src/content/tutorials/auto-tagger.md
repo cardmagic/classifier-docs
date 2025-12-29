@@ -2,7 +2,8 @@
 title: "Auto-Tagger for Blog Posts"
 description: "Build a smart tagging system that suggests tags for new posts based on similar published content."
 difficulty: intermediate
-order: 4
+classifiers: [knn]
+order: 7
 ---
 
 # Auto-Tagger for Blog Posts

@@ -2,7 +2,8 @@
 title: "Git Commit Classifier"
 description: "Automatically classify git commits as feat, fix, docs, refactor, and more using Bayesian classification."
 difficulty: beginner
-order: 9
+classifiers: [bayes]
+order: 3
 ---
 
 # Git Commit Classifier
