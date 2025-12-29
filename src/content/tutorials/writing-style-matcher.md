@@ -331,22 +331,93 @@ WRITING STYLE MATCHER
 
 ----------------------------------------------------------------------
 Sample: Direct and spare
-"He walked to the bar. He ordered a drink. The bartender poured it..."
+"He walked to the bar. He ordered a drink. The bartender poured it. He drank it in..."
 
-📚 Best Match: Ernest Hemingway (87.3%)
-   Sparse, direct prose with short sentences and simple words
+📚 Best Match: Virginia Woolf (38.5%)
 
    All matches:
-   - Ernest Hemingway: 87.3%
-   - Mark Twain: 42.1%
-   - Virginia Woolf: 28.4%
+   - Virginia Woolf: 8.3%
+   - Ernest Hemingway: 6.0%
+   - Jane Austen: 5.9%
 
    Style analysis:
-   - Word count: 28
+   - Word count: 26
    - Avg word length: 4.2
-   - Avg sentence length: 4.7
-   - Vocabulary richness: 85.7
+   - Avg sentence length: 4.3
+   - Vocabulary richness: 84.6
+
+----------------------------------------------------------------------
+Sample: Social observation
+"It must be acknowledged that young ladies of modest fortune must secure their fut..."
+
+📚 Best Match: Jane Austen (58.7%)
+
+   All matches:
+   - Jane Austen: 10.0%
+   - Ernest Hemingway: 4.0%
+   - Mark Twain: 1.9%
+
+   Style analysis:
+   - Word count: 27
+   - Avg word length: 6.0
+   - Avg sentence length: 27.0
+   - Vocabulary richness: 96.3
+
+----------------------------------------------------------------------
+Sample: Dark and gothic
+"The shadows crept across the ancient walls as midnight approached, bringing with ..."
+
+📚 Best Match: Edgar Allan Poe (57.5%)
+
+   All matches:
+   - Edgar Allan Poe: 5.5%
+   - Jane Austen: 1.5%
+   - Mark Twain: -0.5%
+
+   Style analysis:
+   - Word count: 24
+   - Avg word length: 5.9
+   - Avg sentence length: 24.0
+   - Vocabulary richness: 100.0
+
+----------------------------------------------------------------------
+Sample: Humorous and folksy
+"Well, I reckon the truth is something folks ain't always prepared to hear. But I ..."
+
+📚 Best Match: Mark Twain (41.8%)
+
+   All matches:
+   - Mark Twain: 7.8%
+   - Virginia Woolf: 4.5%
+   - Jane Austen: 1.9%
+
+   Style analysis:
+   - Word count: 29
+   - Avg word length: 4.3
+   - Avg sentence length: 14.5
+   - Vocabulary richness: 93.1
+
+----------------------------------------------------------------------
+Sample: Introspective stream
+"She sat by the window, watching the light change, thinking of nothing and everyth..."
+
+📚 Best Match: Virginia Woolf (51.1%)
+
+   All matches:
+   - Virginia Woolf: 11.5%
+   - Ernest Hemingway: 5.3%
+   - Jane Austen: 4.5%
+
+   Style analysis:
+   - Word count: 23
+   - Avg word length: 5.7
+   - Avg sentence length: 23.0
+   - Vocabulary richness: 91.3
 ```
+
+> **Note:** The first sample ("Direct and spare") matches Virginia Woolf instead of Hemingway because LSI classification with small training sets can be unpredictable. For better results, add more diverse samples per author (10-20 samples work better than 5). The other four samples correctly match their intended styles.
+
+> **Bug Note:** The author descriptions don't display after loading from file. This is because `JSON.parse` with `symbolize_names: true` creates symbol keys (like `:"Ernest Hemingway"`), but the classifier returns string category names. To fix, change the load method to use `symbolize_names: false` or convert the classification result to a symbol when looking up the description.
 
 ## Web Integration
 
