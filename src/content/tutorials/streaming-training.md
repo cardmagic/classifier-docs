@@ -2,7 +2,7 @@
 title: "Streaming Training"
 description: "Train classifiers on large datasets with memory-efficient streaming, batch processing with progress tracking, and checkpoint-based resumable training."
 difficulty: intermediate
-classifiers: [bayes, lsi, knn, tfidf]
+classifiers: [bayes, lsi, knn, tfidf, logisticregression]
 order: 14
 ---
 
@@ -308,6 +308,48 @@ knn.train_batch(
 ) do |progress|
   puts "#{progress.percent}% complete"
 end
+```
+
+### Logistic Regression Streaming
+
+Logistic Regression requires an explicit `fit()` call after streaming training:
+
+```ruby
+classifier = Classifier::LogisticRegression.new(:spam, :ham)
+
+# Stream training data
+File.open('spam_corpus.txt', 'r') do |file|
+  classifier.train_from_stream(:spam, file, batch_size: 1000) do |progress|
+    puts "#{progress.completed} spam docs"
+  end
+end
+
+File.open('ham_corpus.txt', 'r') do |file|
+  classifier.train_from_stream(:ham, file, batch_size: 1000) do |progress|
+    puts "#{progress.completed} ham docs"
+  end
+end
+
+# IMPORTANT: Must call fit() before classification
+puts "Fitting model..."
+classifier.fit
+
+# Now ready to classify
+classifier.classify("New message")
+```
+
+You can also use batch training with keyword arguments:
+
+```ruby
+classifier.train_batch(
+  spam: spam_documents,
+  ham: ham_documents,
+  batch_size: 500
+) do |progress|
+  puts "#{progress.percent}% complete"
+end
+
+classifier.fit  # Don't forget!
 ```
 
 ### TF-IDF Streaming

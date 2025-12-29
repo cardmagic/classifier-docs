@@ -125,6 +125,38 @@ classifier = Classifier::Bayes.new :a, :b, language: 'fr'
 classifier = Classifier::Bayes.new :a, :b, enable_threshold: false
 ```
 
+## Streaming & Batch Training
+
+For large datasets, use batch training to reduce lock contention and track progress:
+
+```ruby
+classifier = Classifier::Bayes.new 'Spam', 'Ham'
+
+# Batch training with progress callback
+classifier.train_batch(:spam, spam_documents, batch_size: 1000) do |progress|
+  puts "#{progress.percent}% complete (#{progress.rate.round} docs/sec)"
+end
+
+# Train multiple categories at once
+classifier.train_batch(
+  spam: spam_documents,
+  ham: ham_documents,
+  batch_size: 500
+)
+```
+
+For files too large to load into memory, stream line-by-line:
+
+```ruby
+File.open('spam_corpus.txt', 'r') do |file|
+  classifier.train_from_stream(:spam, file, batch_size: 1000) do |progress|
+    puts "Processed #{progress.completed} lines"
+  end
+end
+```
+
+See the [Streaming Training Tutorial](/docs/tutorials/streaming-training) for checkpoints and resumable training.
+
 ## Example: Sentiment Analyzer
 
 ```ruby
@@ -155,6 +187,6 @@ sentiment.classify "Complete garbage, don't buy"
 
 ## Next Steps
 
-- [Training Strategies](/docs/guides/bayes/training) - Best practices for training data
+- [Streaming Training](/docs/tutorials/streaming-training) - Train on large datasets with progress tracking
 - [Persistence](/docs/guides/persistence/basics) - Save and load trained classifiers
 - [Performance](/docs/guides/production/performance) - Optimize for production use

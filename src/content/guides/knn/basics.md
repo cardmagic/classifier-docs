@@ -167,6 +167,35 @@ result[:neighbors].first(3).each do |n|
 end
 ```
 
+## Streaming & Batch Training
+
+For larger datasets, use batch training with progress callbacks:
+
+```ruby
+knn = Classifier::KNN.new(k: 5)
+
+# Batch training with progress tracking
+knn.train_batch(
+  spam: spam_documents,
+  ham: ham_documents,
+  batch_size: 500
+) do |progress|
+  puts "#{progress.percent}% complete (#{progress.rate.round} docs/sec)"
+end
+```
+
+For files too large to load into memory, stream line-by-line:
+
+```ruby
+File.open('spam_corpus.txt', 'r') do |file|
+  knn.train_from_stream(:spam, file, batch_size: 500) do |progress|
+    puts "Processed #{progress.completed} lines"
+  end
+end
+```
+
+See the [Streaming Training Tutorial](/docs/tutorials/streaming-training) for checkpoints and resumable training.
+
 ## Persistence
 
 Save and load your classifier:
@@ -214,6 +243,6 @@ end
 
 ## Next Steps
 
-- [Persistence Guide](/docs/guides/persistence/basics) - Save and load classifiers
+- [Streaming Training](/docs/tutorials/streaming-training) - Train on large datasets with progress tracking
+- [Persistence](/docs/guides/persistence/basics) - Save and load classifiers
 - [LSI Basics](/docs/guides/lsi/basics) - Understand the similarity engine behind kNN
-- [Bayes Basics](/docs/guides/bayes/basics) - Compare with probabilistic classification

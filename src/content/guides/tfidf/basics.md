@@ -128,6 +128,28 @@ tfidf.num_documents   # => 3
 tfidf.fitted?         # => true
 ```
 
+## Streaming from Files
+
+For large corpora that don't fit in memory, fit from a file stream:
+
+```ruby
+tfidf = Classifier::TFIDF.new
+
+# Fit vocabulary from stream (one document per line)
+File.open('corpus.txt', 'r') do |file|
+  tfidf.fit_from_stream(file, batch_size: 1000) do |progress|
+    puts "Processed #{progress.completed} documents (#{progress.rate.round}/sec)"
+  end
+end
+
+# Now transform new documents
+vector = tfidf.transform("new document text")
+```
+
+The streaming API processes the file line-by-line, building the vocabulary and IDF weights without loading the entire corpus into memory.
+
+See the [Streaming Training Tutorial](/docs/tutorials/streaming-training) for more details on streaming and progress tracking.
+
 ## When to Use TF-IDF
 
 **Good for:**
@@ -221,6 +243,6 @@ test_vector = tfidf.transform(new_document)
 
 ## Next Steps
 
+- [Streaming Training](/docs/tutorials/streaming-training) - Train on large datasets with progress tracking
 - [LSI Basics](/docs/guides/lsi/basics) - Semantic analysis using SVD
-- [Bayes Basics](/docs/guides/bayes/basics) - Probabilistic classification
-- [kNN Basics](/docs/guides/knn/basics) - Instance-based classification
+- [Persistence](/docs/guides/persistence/basics) - Save and load fitted vectorizers

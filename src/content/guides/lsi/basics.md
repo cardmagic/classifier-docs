@@ -102,6 +102,42 @@ documents.each { |doc| lsi.add_item(doc) }
 lsi.build_index
 ```
 
+## Streaming & Batch Training
+
+For large document collections, use batch training with progress tracking:
+
+```ruby
+lsi = Classifier::LSI.new(auto_rebuild: false)
+
+# Batch add items by category
+lsi.add_batch(
+  tech: tech_documents,
+  sports: sports_documents,
+  batch_size: 500
+) do |progress|
+  puts "Added #{progress.completed} items (#{progress.rate.round}/sec)"
+end
+
+# Build index once after all documents are added
+lsi.build_index
+```
+
+For files too large to load into memory, stream line-by-line:
+
+```ruby
+File.open('corpus.txt', 'r') do |file|
+  lsi.train_from_stream(:documents, file, batch_size: 1000) do |progress|
+    puts "Processed #{progress.completed} lines"
+  end
+end
+
+lsi.build_index
+```
+
+The streaming API automatically disables auto-rebuild during training and rebuilds the index once at the end.
+
+See the [Streaming Training Tutorial](/docs/tutorials/streaming-training) for checkpoints and resumable training.
+
 ## When to Use LSI
 
 **Good for:**
@@ -157,6 +193,6 @@ Classifier::LSI.backend
 
 ## Next Steps
 
-- [Semantic Search](/docs/guides/lsi/semantic-search) - Build a search engine
-- [Clustering](/docs/guides/lsi/clustering) - Group similar documents
-- [Tuning Parameters](/docs/guides/lsi/tuning) - Optimize for your use case
+- [Streaming Training](/docs/tutorials/streaming-training) - Train on large corpora with progress tracking
+- [Persistence](/docs/guides/persistence/basics) - Save and load trained indices
+- [Performance](/docs/guides/production/performance) - Optimize for production use
