@@ -3,7 +3,7 @@ title: "Code Snippet Classifier"
 description: "Build a classifier that detects programming languages and code patterns from snippets using LSI semantic analysis."
 difficulty: advanced
 classifiers: [lsi, knn]
-order: 14
+order: 15
 ---
 
 # Code Snippet Classifier
