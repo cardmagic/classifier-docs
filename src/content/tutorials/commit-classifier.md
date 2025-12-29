@@ -325,20 +325,22 @@ GIT COMMIT CLASSIFIER
 ======================================================================
 
 Commit: add new payment gateway integration
-Type: feat (87.3% confidence)
+Type: feat (24.4% confidence)
 Suggested: feat: add new payment gateway integration
-Top scores: Feat:87.3%, Chore:4.2%, Build:3.1%
+Top scores: Feat:24.4%, Test:22.1%, Docs:15.7%
 
 Commit: resolve issue with user logout
-Type: fix (91.2% confidence)
+Type: fix (32.7% confidence)
 Suggested: fix: resolve issue with user logout
-Top scores: Fix:91.2%, Feat:3.4%, Refactor:2.1%
+Top scores: Fix:32.7%, Feat:18.5%, Style:10.2%
 
 Commit: update the installation guide
-Type: docs (94.5% confidence)
+Type: docs (37.6% confidence)
 Suggested: docs: update the installation guide
-Top scores: Docs:94.5%, Chore:2.3%, Feat:1.1%
+Top scores: Docs:37.6%, Chore:15.8%, Build:8.9%
 ```
+
+**Note:** With 10 commit types, confidence scores are naturally lower since probability is distributed across more categories. The classifier still picks the correct type—focus on whether it's the highest-scoring category rather than absolute percentages.
 
 ## Analyze a Real Repository
 
