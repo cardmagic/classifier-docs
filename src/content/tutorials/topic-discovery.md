@@ -99,20 +99,18 @@ class TopicDiscoverer
   end
 
   # Step 3: Classify new documents
-  def classify(text, top_n: 3)
-    return [] if @topics.empty?
+  def classify(text)
+    return nil if @topics.empty?
 
-    # Get LSI classification
-    results = @lsi.classify(text, top_n)
-    return [] unless results
+    # Get LSI classification with confidence (returns [category, confidence])
+    category, confidence = @lsi.classify_with_confidence(text)
+    return nil unless category
 
-    Array(results).map do |topic|
-      {
-        topic: topic,
-        confidence: calculate_confidence(text, topic),
-        sample_docs: @topic_documents[topic]&.first(2)
-      }
-    end
+    {
+      topic: category,
+      confidence: (confidence * 100).round(1),
+      sample_docs: @topic_documents[category]&.first(2)
+    }
   end
 
   # Get detailed topic info
@@ -323,32 +321,34 @@ Run it:
 ruby discover.rb
 ```
 
-Output:
+Output (results vary based on random initialization):
 ```
 Discovered 4 topics:
 
-Topic: javascript-web-framework
-  Documents: 5
-  Key terms: javascript, web, framework
+Topic: web-for-provid
+  Documents: 3
+  Key terms: web, for, provid
   Sample: "Ruby on Rails is a web framework for building applications quickly..."
 
-Topic: market-invest-stock
-  Documents: 5
-  Key terms: market, invest, stock
-  Sample: "Stock market indices reached record highs today..."
+Topic: javascript
+  Documents: 3
+  Key terms: javascript
+  Sample: "JavaScript React creates interactive user interfaces..."
 
-Topic: health-exercise-sleep
-  Documents: 5
-  Key terms: health, exercise, sleep
-  Sample: "Regular exercise improves cardiovascular health..."
+Topic: diseas-provid
+  Documents: 2
+  Key terms: diseas, provid
+  Sample: "Nutrition plays a key role in disease prevention..."
 
-Topic: game-team-player
-  Documents: 5
-  Key terms: game, team, player
+Topic: million
+  Documents: 2
+  Key terms: million
   Sample: "The championship game drew millions of viewers..."
 
 Saved to topics.json
 ```
+
+**Note:** Topic names are generated from stemmed terms (e.g., "provid" from "provides/prevention"). With small corpora, clustering may produce mixed or incomplete topics. Larger datasets with more shared vocabulary yield better results.
 
 ## Classifying New Documents
 
@@ -372,14 +372,12 @@ puts "Classifying new documents:\n\n"
 new_documents.each do |doc|
   puts "Document: \"#{doc}\""
 
-  results = discoverer.classify(doc, top_n: 2)
+  result = discoverer.classify(doc)
 
-  if results.empty?
+  if result.nil?
     puts "  No matching topic found"
   else
-    results.each do |r|
-      puts "  → #{r[:topic]} (#{r[:confidence]}% confidence)"
-    end
+    puts "  → #{result[:topic]} (#{result[:confidence]}% confidence)"
   end
   puts
 end
@@ -390,20 +388,19 @@ Output:
 Classifying new documents:
 
 Document: "Learning Vue.js for frontend web development"
-  → javascript-web-framework (72.3% confidence)
+  → web-for-provid (100.0% confidence)
 
 Document: "Portfolio rebalancing strategies for retirement"
-  → market-invest-stock (68.5% confidence)
+  → web-for-provid (100.0% confidence)
 
 Document: "Marathon training requires proper hydration"
-  → health-exercise-sleep (61.2% confidence)
+  No matching topic found
 
 Document: "The playoffs start next week with home advantage"
-  → game-team-player (74.8% confidence)
-
-Document: "Machine learning models require large datasets"
-  → javascript-web-framework (31.2% confidence)
+  No matching topic found
 ```
+
+**Note:** Classification quality depends on topic coverage. Documents using vocabulary outside the training corpus may not match any topic. This is expected with small training sets.
 
 ## Refining Topics
 
@@ -467,12 +464,12 @@ class HierarchicalDiscoverer
 
   def classify(text)
     # Classify at root level
-    root_result = @root.classify(text, top_n: 1).first
+    root_result = @root.classify(text)
     return nil unless root_result
 
     # Check for subtopic
     if @subtopics[root_result[:topic]]
-      sub_result = @subtopics[root_result[:topic]].classify(text, top_n: 1).first
+      sub_result = @subtopics[root_result[:topic]].classify(text)
       return {
         topic: root_result[:topic],
         subtopic: sub_result&.dig(:topic),
@@ -498,7 +495,7 @@ class DocumentLibrary
 
   def add(id, content, metadata = {})
     # Auto-classify
-    classification = @discoverer.classify(content, top_n: 1).first
+    classification = @discoverer.classify(content)
 
     @documents[id] = {
       content: content,
