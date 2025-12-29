@@ -315,7 +315,7 @@ end
 Logistic Regression requires an explicit `fit()` call after streaming training:
 
 ```ruby
-classifier = Classifier::LogisticRegression.new(:spam, :ham)
+classifier = Classifier::LogisticRegression.new([:spam, :ham])
 
 # Stream training data
 File.open('spam_corpus.txt', 'r') do |file|

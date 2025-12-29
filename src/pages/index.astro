@@ -8,7 +8,7 @@ import CodeExample from '../components/CodeExample.astro';
   <section class="bg-gradient-to-b from-gray-50 to-white py-20">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
       <div class="inline-flex items-center gap-2 bg-ruby/10 text-ruby px-3 py-1 rounded-full text-sm font-medium mb-6">
-        <span>v3.0.0</span>
+        <span>v2.2.0</span>
         <span class="text-ruby/60">•</span>
         <span>Bayes + LSI + kNN + TF-IDF + Logistic Regression</span>
       </div>
@@ -162,7 +162,7 @@ result[<span class="text-cyan-400">:confidence</span>]  <span class="text-gray-5
         </CodeExample>
 
         <CodeExample title="Logistic Regression" description="Well-calibrated probabilities for confident decisions">
-          <Fragment set:html={`lr = <span class="text-yellow-400">Classifier::LogisticRegression</span>.new <span class="text-green-400">:spam</span>, <span class="text-green-400">:ham</span>
+          <Fragment set:html={`lr = <span class="text-yellow-400">Classifier::LogisticRegression</span>.new([<span class="text-green-400">:spam</span>, <span class="text-green-400">:ham</span>])
 
 lr.train(
   <span class="text-cyan-400">spam:</span> [<span class="text-green-400">"Buy now!"</span>, <span class="text-green-400">"Free money!"</span>],

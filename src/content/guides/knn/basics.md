@@ -235,7 +235,7 @@ def evaluate(classifier, test_cases)
 end
 
 # Works with any classifier
-[Classifier::Bayes.new(:a, :b), Classifier::KNN.new, Classifier::LogisticRegression.new(:a, :b)].each do |c|
+[Classifier::Bayes.new(:a, :b), Classifier::KNN.new, Classifier::LogisticRegression.new([:a, :b])].each do |c|
   train_classifier(c, training_data)
   puts evaluate(c, test_data)
 end

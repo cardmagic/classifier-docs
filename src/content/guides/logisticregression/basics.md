@@ -39,11 +39,11 @@ This ensures probabilities are always between 0 and 1 and sum to 1.0.
 require 'classifier'
 
 # Create with two or more categories
-classifier = Classifier::LogisticRegression.new :spam, :ham
+classifier = Classifier::LogisticRegression.new([:spam, :ham])
 
 # With custom hyperparameters
 classifier = Classifier::LogisticRegression.new(
-  :spam, :ham,
+  [:spam, :ham],
   learning_rate: 0.1,      # Step size for gradient descent
   regularization: 0.01,    # L2 regularization strength
   max_iterations: 100,     # Maximum training iterations
@@ -175,7 +175,7 @@ Logistic Regression handles multiple categories naturally:
 
 ```ruby
 classifier = Classifier::LogisticRegression.new(
-  :tech, :sports, :politics, :entertainment
+  [:tech, :sports, :politics, :entertainment]
 )
 
 classifier.train(
@@ -208,7 +208,7 @@ threads.each(&:join)
 For large datasets, use batch training with progress callbacks:
 
 ```ruby
-classifier = Classifier::LogisticRegression.new :spam, :ham
+classifier = Classifier::LogisticRegression.new([:spam, :ham])
 
 # Batch training with progress tracking
 classifier.train_batch(:spam, spam_documents, batch_size: 1000) do |progress|
@@ -252,7 +252,7 @@ See the [Streaming Training Tutorial](/docs/tutorials/streaming-training) for ch
 ## Example: Spam Filter with Confidence Levels
 
 ```ruby
-spam_filter = Classifier::LogisticRegression.new :spam, :ham
+spam_filter = Classifier::LogisticRegression.new([:spam, :ham])
 
 # Train with examples
 spam_filter.train(
