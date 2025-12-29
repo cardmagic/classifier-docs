@@ -229,6 +229,6 @@ end
 
 ## Next Steps
 
-- [Document Categorizer](/docs/tutorials/document-classifier) - Classify documents into multiple categories
+- [Auto Tagger](/docs/tutorials/auto-tagger) - Automatically tag documents with multiple categories
 - [Save and Load Models](/docs/guides/persistence/basics) - Production persistence strategies
-- [Performance Tuning](/docs/guides/production/performance) - Optimize for high-volume classification
+- [Real-time Pipeline](/docs/tutorials/realtime-pipeline) - Build a production-ready classification pipeline

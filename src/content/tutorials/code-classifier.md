@@ -690,12 +690,13 @@ Sample: Ruby with RSpec
   describe Calculator do
     it 'adds two numbers' do
       expect(Calculator.add(2, 3)).to eq(5)
-  ...
+    end
+  end
 
-Language: ruby (87.3%)
-  Alternatives: ruby=87.3%, python=42.1%, javascript=38.5%
-Purpose: test (92.5%)
-Key tokens: test_describe, test_it, test_expect, ruby_def, indent_2space
+Language: ruby (85.1%)
+  Alternatives: ruby=74.5%, javascript=24.1%, python=13.9%
+Purpose: test (56.4%)
+Key tokens: test_it, test_expect, ruby_keyword_end, lang_ruby, ruby_keyword_do, indent_2space, bracket_significant_whitespace
 ```
 
 ## IDE Integration

@@ -382,4 +382,4 @@ lsi.save
 
 - [Bayes Basics](/docs/guides/bayes/basics) - Learn about Bayesian classification
 - [LSI Basics](/docs/guides/lsi/basics) - Explore semantic indexing
-- [Performance](/docs/guides/production/performance) - Optimize for production
+- [Real-time Pipeline](/docs/tutorials/realtime-pipeline) - Build a production-ready classification pipeline

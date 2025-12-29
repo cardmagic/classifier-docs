@@ -246,19 +246,27 @@ ruby suggest.rb
 Output:
 ```
 Suggested tags:
-  javascript (78.5% confidence)
-  frontend (65.2% confidence)
-  tutorial (52.1% confidence)
-  react (34.8% confidence)
+  tutorial (25.1% confidence)
+  ruby (21.5% confidence)
+  javascript (19.5% confidence)
+  react (19.5% confidence)
+  frontend (19.5% confidence)
 
 Why these tags?
-javascript (78.5%):
-  - 72.3% similar: "Understanding React hooks. Learn useState, useEffect..."
-  - 68.1% similar: "Introduction to TypeScript. Static typing for JavaScript..."
 
-frontend (65.2%):
-  - 72.3% similar: "Understanding React hooks. Learn useState, useEffect..."
-  - 61.4% similar: "CSS Grid vs Flexbox. When to use each layout system..."
+tutorial (25.1%):
+  - 29.3% similar: "Understanding React hooks. Learn useState, useEffect..."
+  - 14.8% similar: "Building REST APIs with Ruby. Design principles..."
+  - 6.2% similar: "Docker containers for Ruby development..."
+
+ruby (21.5%):
+  - 22.1% similar: "Building a Rails API with GraphQL. Schema design..."
+  - 14.8% similar: "Building REST APIs with Ruby. Design principles..."
+  - 6.2% similar: "Docker containers for Ruby development..."
+
+javascript (19.5%):
+  - 29.3% similar: "Understanding React hooks. Learn useState, useEffect..."
+  - 9.6% similar: "React component testing with Jest. Unit tests..."
 ```
 
 ## Integration with a Blog

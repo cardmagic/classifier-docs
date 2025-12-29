@@ -297,4 +297,4 @@ end
 
 - [Streaming Training](/docs/tutorials/streaming-training) - Train on large datasets with progress tracking
 - [Persistence](/docs/guides/persistence/basics) - Save and load trained classifiers
-- [Performance](/docs/guides/production/performance) - Optimize for production use
+- [Real-time Pipeline](/docs/tutorials/realtime-pipeline) - Build a production-ready classification pipeline
