@@ -3,7 +3,7 @@ title: "Ensemble Classifier"
 description: "Combine Bayes, LSI, and kNN classifiers with weighted voting for higher accuracy than any single model."
 difficulty: advanced
 classifiers: [bayes, lsi, knn]
-order: 11
+order: 12
 ---
 
 # Ensemble Classifier

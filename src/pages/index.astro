@@ -46,7 +46,7 @@ import CodeExample from '../components/CodeExample.astro';
   <!-- Features Section -->
   <section class="py-20">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-8">
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-8">
         <a href="/docs/guides/bayes/basics" class="text-center group">
           <div class="w-12 h-12 bg-ruby/10 rounded-lg flex items-center justify-center mx-auto mb-4 group-hover:bg-ruby/20 transition-colors">
             <svg class="w-6 h-6 text-ruby" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -96,6 +96,16 @@ import CodeExample from '../components/CodeExample.astro';
           <h3 class="font-semibold text-gray-900 mb-2 group-hover:text-ruby transition-colors">Logistic Regression</h3>
           <p class="text-gray-600 text-sm">Well-calibrated probabilities with interpretable feature weights.</p>
         </a>
+
+        <a href="/docs/tutorials/streaming-training" class="text-center group">
+          <div class="w-12 h-12 bg-ruby/10 rounded-lg flex items-center justify-center mx-auto mb-4 group-hover:bg-ruby/20 transition-colors">
+            <svg class="w-6 h-6 text-ruby" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"/>
+            </svg>
+          </div>
+          <h3 class="font-semibold text-gray-900 mb-2 group-hover:text-ruby transition-colors">Streaming Training</h3>
+          <p class="text-gray-600 text-sm">Train on multi-GB datasets with memory-efficient streaming and progress tracking.</p>
+        </a>
       </div>
     </div>
   </section>
@@ -131,9 +141,9 @@ classifier.train(
 classifier.classify <span class="text-green-400">"Quarterly review scheduled"</span>
 <span class="text-gray-500"># =&gt; "Ham"</span>
 
-<span class="text-gray-500"># Get probability scores</span>
+<span class="text-gray-500"># Get log-probability scores (less negative = more likely)</span>
 classifier.classifications <span class="text-green-400">"Limited time offer"</span>
-<span class="text-gray-500"># =&gt; {"Spam" =&gt; -4.2, "Ham" =&gt; -8.7}</span>`} />
+<span class="text-gray-500"># =&gt; {"Spam" =&gt; -10.5, "Ham" =&gt; -10.2}</span>`} />
         </CodeExample>
 
         <CodeExample title="Semantic Search with LSI" description="Find documents by meaning, not just keywords">
@@ -152,13 +162,13 @@ lsi.search <span class="text-green-400">"web development with Ruby"</span>
           <Fragment set:html={`knn = <span class="text-yellow-400">Classifier::KNN</span>.new(<span class="text-cyan-400">k:</span> <span class="text-cyan-400">3</span>)
 
 knn.add(
-  <span class="text-cyan-400">spam:</span> [<span class="text-green-400">"Buy now!"</span>, <span class="text-green-400">"You won!"</span>],
+  <span class="text-cyan-400">spam:</span> [<span class="text-green-400">"Free prize winner"</span>, <span class="text-green-400">"You won free money"</span>],
   <span class="text-cyan-400">ham:</span> [<span class="text-green-400">"Meeting at 3pm"</span>, <span class="text-green-400">"Review doc"</span>]
 )
 
-result = knn.classify_with_neighbors <span class="text-green-400">"Free prize"</span>
+result = knn.classify_with_neighbors <span class="text-green-400">"Claim your free prize"</span>
 result[<span class="text-cyan-400">:category</span>]    <span class="text-gray-500"># =&gt; "spam"</span>
-result[<span class="text-cyan-400">:confidence</span>]  <span class="text-gray-500"># =&gt; 0.85</span>`} />
+result[<span class="text-cyan-400">:confidence</span>]  <span class="text-gray-500"># =&gt; 0.67</span>`} />
         </CodeExample>
 
         <CodeExample title="TF-IDF Vectorizer" description="Transform text into weighted feature vectors">
@@ -170,8 +180,8 @@ tfidf.fit([
   <span class="text-green-400">"Dogs are great pets"</span>
 ])
 
-vector = tfidf.transform <span class="text-green-400">"Ruby web development"</span>
-<span class="text-gray-500"># =&gt; {:ruby =&gt; 0.71, :web =&gt; 0.50, :develop =&gt; 0.50}</span>`} />
+vector = tfidf.transform <span class="text-green-400">"Ruby programming"</span>
+<span class="text-gray-500"># =&gt; {:rubi =&gt; 0.63, :program =&gt; 0.77}</span>`} />
         </CodeExample>
 
         <CodeExample title="Logistic Regression" description="Well-calibrated probabilities for confident decisions">
@@ -184,7 +194,7 @@ lr.train(
 
 <span class="text-gray-500"># Probabilities always sum to 1.0</span>
 lr.probabilities <span class="text-green-400">"Claim your prize"</span>
-<span class="text-gray-500"># =&gt; {"Spam" =&gt; 0.92, "Ham" =&gt; 0.08}</span>`} />
+<span class="text-gray-500"># =&gt; {"spam" =&gt; 0.37, "ham" =&gt; 0.63}</span>`} />
         </CodeExample>
       </div>
     </div>
