@@ -12,7 +12,7 @@ This tutorial will get you up and running with the classifier gem in under 5 min
 
 ## Prerequisites
 
-- Ruby 2.7 or higher
+- Ruby 3.1 or higher
 - Bundler (optional, but recommended)
 
 ## Installation

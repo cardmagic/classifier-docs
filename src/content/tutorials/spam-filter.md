@@ -166,10 +166,10 @@ ruby classify.rb
 
 Output:
 ```
-[SPAM] (89.2% spam) You've won a free vacation!
-[HAM] (12.4% spam) Team standup moved to 3pm
-[SPAM] (94.1% spam) Claim your prize now - limited time
-[HAM] (8.7% spam) Invoice attached for your review
+[SPAM] (95.5% spam) You've won a free vacation!
+[HAM] (43.1% spam) Team standup moved to 3pm
+[SPAM] (93.4% spam) Claim your prize now - limited time
+[HAM] (13.6% spam) Invoice attached for your review
 ```
 
 ## Evaluating Accuracy
