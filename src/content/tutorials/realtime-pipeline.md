@@ -53,24 +53,60 @@ gem 'sinatra'
 gem 'connection_pool'
 ```
 
+## Redis Storage Backend
+
+First, implement a Redis storage backend following the gem's storage protocol. Create `lib/storage/redis.rb`:
+
+```ruby
+require 'classifier'
+
+module Classifier
+  module Storage
+    class Redis < Base
+      def initialize(redis_pool:, key:, ttl: 3600)
+        @redis_pool = redis_pool
+        @key = key
+        @ttl = ttl
+      end
+
+      def write(data)
+        @redis_pool.with { |r| r.setex(@key, @ttl, data) }
+      end
+
+      def read
+        @redis_pool.with { |r| r.get(@key) }
+      end
+
+      def delete
+        @redis_pool.with { |r| r.del(@key) }
+      end
+
+      def exists?
+        @redis_pool.with { |r| r.exists?(@key) }
+      end
+    end
+  end
+end
+```
+
 ## The Cached Classifier
 
-Create `lib/cached_classifier.rb`:
+Now build a thread-safe wrapper that uses the storage backend. Create `lib/cached_classifier.rb`:
 
 ```ruby
 require 'classifier'
 require 'redis'
-require 'json'
 require 'connection_pool'
+require_relative 'storage/redis'
 
 class CachedClassifier
-  CACHE_TTL = 3600  # 1 hour
-  LOCK_TTL = 10     # 10 seconds for rebuild lock
+  LOCK_TTL = 10  # 10 seconds for rebuild lock
 
-  def initialize(name:, categories:, redis_pool:)
+  def initialize(name:, categories:, redis_pool:, ttl: 3600)
     @name = name
     @categories = categories
     @redis_pool = redis_pool
+    @ttl = ttl
     @local_classifier = nil
     @local_version = nil
   end
@@ -89,60 +125,47 @@ class CachedClassifier
 
   # Train and persist to Redis
   def train(category, text)
-    @redis_pool.with do |redis|
-      # Acquire lock for training
-      lock_key = "#{cache_key}:lock"
-      return false unless acquire_lock(redis, lock_key)
-
-      begin
-        classifier = load_or_create_classifier
-        classifier.train(category, text)
-
-        # Persist and increment version
-        save_classifier(redis, classifier)
-        redis.incr(version_key)
-        @local_version = nil  # Force reload
-        true
-      ensure
-        release_lock(redis, lock_key)
-      end
+    with_lock do
+      classifier = get_or_build_classifier
+      classifier.train(category.to_sym => text)
+      classifier.save
+      increment_version
+      true
     end
   end
 
   # Batch train (more efficient)
   def batch_train(training_data)
-    @redis_pool.with do |redis|
-      lock_key = "#{cache_key}:lock"
-      return false unless acquire_lock(redis, lock_key)
+    with_lock do
+      classifier = get_or_build_classifier
 
-      begin
-        classifier = load_or_create_classifier
-
-        training_data.each do |category, texts|
-          Array(texts).each { |text| classifier.train(category, text) }
-        end
-
-        save_classifier(redis, classifier)
-        redis.incr(version_key)
-        @local_version = nil
-        true
-      ensure
-        release_lock(redis, lock_key)
+      training_data.each do |category, texts|
+        classifier.train(category.to_sym => Array(texts))
       end
+
+      classifier.save
+      increment_version
+      true
     end
   end
 
   # Force rebuild from training data
   def rebuild!
-    @redis_pool.with do |redis|
-      redis.del(cache_key)
-      redis.incr(version_key)
-      @local_classifier = nil
-      @local_version = nil
-    end
+    storage.delete
+    increment_version
+    @local_classifier = nil
+    @local_version = nil
   end
 
   private
+
+  def storage
+    @storage ||= Classifier::Storage::Redis.new(
+      redis_pool: @redis_pool,
+      key: "classifier:#{@name}:state",
+      ttl: @ttl
+    )
+  end
 
   def get_or_build_classifier
     current_version = get_version
@@ -159,57 +182,47 @@ class CachedClassifier
   end
 
   def load_or_create_classifier
-    @redis_pool.with do |redis|
-      cached = redis.get(cache_key)
-
-      if cached
-        data = JSON.parse(cached, symbolize_names: true)
-        restore_classifier(data)
-      else
-        create_classifier
-      end
+    if storage.exists?
+      Classifier::Bayes.load(storage: storage)
+    else
+      classifier = Classifier::Bayes.new(*@categories)
+      classifier.storage = storage
+      classifier
     end
-  end
-
-  def create_classifier
-    Classifier::Bayes.new(*@categories)
-  end
-
-  def restore_classifier(data)
-    classifier = Classifier::Bayes.new(*@categories)
-    # Restore internal state
-    data[:categories].each do |cat, words|
-      words.each { |word, count| count.times { classifier.train(cat.to_sym, word) } }
-    end
-    classifier
-  end
-
-  def save_classifier(redis, classifier)
-    # Serialize classifier state
-    data = {
-      categories: @categories.to_h { |c| [c, classifier.instance_variable_get(:@categories)[c] || {}] },
-      total_words: classifier.instance_variable_get(:@total_words)
-    }
-
-    redis.setex(cache_key, CACHE_TTL, data.to_json)
   end
 
   def get_version
     @redis_pool.with { |r| r.get(version_key).to_i }
   end
 
-  def cache_key = "classifier:#{@name}:state"
-  def version_key = "classifier:#{@name}:version"
-
-  def acquire_lock(redis, key)
-    redis.set(key, "1", nx: true, ex: LOCK_TTL)
+  def increment_version
+    @redis_pool.with { |r| r.incr(version_key) }
+    @local_version = nil  # Force reload on next access
   end
 
-  def release_lock(redis, key)
-    redis.del(key)
+  def version_key
+    "classifier:#{@name}:version"
+  end
+
+  def with_lock
+    lock_key = "classifier:#{@name}:lock"
+    @redis_pool.with do |redis|
+      return false unless redis.set(lock_key, "1", nx: true, ex: LOCK_TTL)
+      begin
+        yield
+      ensure
+        redis.del(lock_key)
+      end
+    end
   end
 end
 ```
+
+This approach:
+- Uses the gem's standard `Storage` protocol
+- Gets dirty tracking for free via `classifier.save`
+- Is consistent with file-based persistence patterns
+- Makes it easy to swap storage backends
 
 ## Sidekiq Worker
 

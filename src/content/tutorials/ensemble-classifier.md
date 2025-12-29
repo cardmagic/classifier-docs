@@ -147,8 +147,12 @@ class EnsembleClassifier
     @bayes.storage = Classifier::Storage::File.new(path: "#{path}/bayes.json")
     @bayes.save
 
-    File.write("#{path}/lsi.json", @lsi.to_json)
-    File.write("#{path}/knn.json", @knn.to_json)
+    @lsi.storage = Classifier::Storage::File.new(path: "#{path}/lsi.json")
+    @lsi.save
+
+    @knn.storage = Classifier::Storage::File.new(path: "#{path}/knn.json")
+    @knn.save
+
     File.write("#{path}/meta.json", {
       strategy: @strategy,
       weights: @weights,
@@ -163,10 +167,13 @@ class EnsembleClassifier
     ensemble.weights = meta[:weights]
     ensemble.instance_variable_set(:@categories, meta[:categories])
 
-    storage = Classifier::Storage::File.new(path: "#{path}/bayes.json")
-    ensemble.instance_variable_set(:@bayes, Classifier::Bayes.load(storage: storage))
-    ensemble.instance_variable_set(:@lsi, Classifier::LSI.from_json(File.read("#{path}/lsi.json")))
-    ensemble.instance_variable_set(:@knn, Classifier::KNN.from_json(File.read("#{path}/knn.json")))
+    bayes_storage = Classifier::Storage::File.new(path: "#{path}/bayes.json")
+    lsi_storage = Classifier::Storage::File.new(path: "#{path}/lsi.json")
+    knn_storage = Classifier::Storage::File.new(path: "#{path}/knn.json")
+
+    ensemble.instance_variable_set(:@bayes, Classifier::Bayes.load(storage: bayes_storage))
+    ensemble.instance_variable_set(:@lsi, Classifier::LSI.load(storage: lsi_storage))
+    ensemble.instance_variable_set(:@knn, Classifier::KNN.load(storage: knn_storage))
 
     ensemble
   end

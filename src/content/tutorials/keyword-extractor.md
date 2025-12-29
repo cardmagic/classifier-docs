@@ -152,13 +152,15 @@ class KeywordExtractor
   end
 
   def save(path)
-    File.write(path, @tfidf.to_json)
+    @tfidf.storage = Classifier::Storage::File.new(path: path)
+    @tfidf.save
     File.write("#{path}.corpus", @corpus.to_json)
   end
 
   def self.load(path)
     extractor = new
-    extractor.instance_variable_set(:@tfidf, Classifier::TFIDF.from_json(File.read(path)))
+    storage = Classifier::Storage::File.new(path: path)
+    extractor.instance_variable_set(:@tfidf, Classifier::TFIDF.load(storage: storage))
     extractor.instance_variable_set(:@corpus, JSON.parse(File.read("#{path}.corpus")))
     extractor.instance_variable_set(:@fitted, true)
     extractor
@@ -437,18 +439,30 @@ end
 
 ## N-gram Keywords
 
-Extract multi-word phrases:
+Extract multi-word phrases by configuring the TFIDF with bigrams:
 
 ```ruby
+class KeywordExtractor
+  def initialize(corpus = [], ngram_range: [1, 1])
+    @tfidf = Classifier::TFIDF.new(
+      min_df: 1,
+      max_df: 0.85,
+      sublinear_tf: true,
+      ngram_range: ngram_range  # [1, 2] for unigrams + bigrams
+    )
+    @corpus = corpus
+    @fitted = false
+  end
+  # ... rest of class
+end
+
 # Enable bigrams for phrase extraction
-extractor = KeywordExtractor.new
-extractor.instance_variable_get(:@tfidf).instance_variable_set(
-  :@ngram_range, [1, 2]
-)
+extractor = KeywordExtractor.new(ngram_range: [1, 2])
+extractor.fit(corpus)
 
 # Now extracts phrases like:
-# - machine_learn (machine learning)
-# - deep_learn (deep learning)
+# - machine_learning
+# - deep_learning
 # - neural_network
 ```
 

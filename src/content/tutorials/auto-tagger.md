@@ -116,13 +116,15 @@ class AutoTagger
   end
 
   def save(path)
-    File.write(path, @knn.to_json)
+    @knn.storage = Classifier::Storage::File.new(path: path)
+    @knn.save
     File.write("#{path}.tags", @post_tags.to_json)
   end
 
   def self.load(path)
     tagger = new
-    tagger.instance_variable_set(:@knn, Classifier::KNN.from_json(File.read(path)))
+    storage = Classifier::Storage::File.new(path: path)
+    tagger.instance_variable_set(:@knn, Classifier::KNN.load(storage: storage))
     tagger.instance_variable_set(:@post_tags, JSON.parse(File.read("#{path}.tags")))
     tagger
   end

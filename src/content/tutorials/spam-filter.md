@@ -75,13 +75,15 @@ class SpamFilter
     spam_probability * 100
   end
 
-  def save(filename)
-    @classifier.save(filename)
+  def save(path)
+    @classifier.storage = Classifier::Storage::File.new(path: path)
+    @classifier.save
   end
 
-  def self.load(filename)
+  def self.load(path)
     filter = new
-    filter.instance_variable_set(:@classifier, Classifier::Bayes.load(filename))
+    storage = Classifier::Storage::File.new(path: path)
+    filter.instance_variable_set(:@classifier, Classifier::Bayes.load(storage: storage))
     filter
   end
 end
@@ -125,9 +127,9 @@ spam_examples.each { |text| filter.train_spam(text) }
 ham_examples.each { |text| filter.train_ham(text) }
 
 # Save the trained model
-filter.save('spam_filter.dat')
+filter.save('spam_filter.json')
 
-puts "Training complete! Model saved to spam_filter.dat"
+puts "Training complete! Model saved to spam_filter.json"
 ```
 
 ## Using the Filter
@@ -138,7 +140,7 @@ Create `classify.rb`:
 require_relative 'spam_filter'
 
 # Load the trained model
-filter = SpamFilter.load('spam_filter.dat')
+filter = SpamFilter.load('spam_filter.json')
 
 # Test some emails
 test_emails = [
@@ -177,7 +179,7 @@ Create `evaluate.rb` to measure how well your filter performs:
 ```ruby
 require_relative 'spam_filter'
 
-filter = SpamFilter.load('spam_filter.dat')
+filter = SpamFilter.load('spam_filter.json')
 
 # Test dataset (keep separate from training data!)
 test_data = [

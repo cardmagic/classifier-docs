@@ -115,24 +115,26 @@ class IntentClassifier
   end
 
   def save(path)
-    data = {
-      intents: @intents.transform_values { |v| v.reject { |k, _| k == :handler } },
-      knn: JSON.parse(@knn.to_json)
-    }
-    File.write(path, data.to_json)
+    @knn.storage = Classifier::Storage::File.new(path: path)
+    @knn.save
+    # Save intents metadata separately (handlers can't be serialized)
+    intents_data = @intents.transform_values { |v| v.reject { |k, _| k == :handler } }
+    File.write("#{path}.intents", intents_data.to_json)
   end
 
   def self.load(path, handlers: {})
     classifier = new
-    data = JSON.parse(File.read(path), symbolize_names: true)
+    storage = Classifier::Storage::File.new(path: path)
+    classifier.instance_variable_set(:@knn, Classifier::KNN.load(storage: storage))
 
-    data[:intents].each do |name, intent_data|
-      classifier.register_intent(
-        name,
-        examples: intent_data[:examples],
-        description: intent_data[:description],
+    # Restore intents metadata and attach handlers
+    intents_data = JSON.parse(File.read("#{path}.intents"), symbolize_names: true)
+    intents_data.each do |name, data|
+      classifier.instance_variable_get(:@intents)[name] = {
+        description: data[:description],
+        examples: data[:examples],
         handler: handlers[name]
-      )
+      }
     end
 
     classifier

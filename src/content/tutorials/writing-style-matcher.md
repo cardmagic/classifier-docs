@@ -109,13 +109,15 @@ class StyleMatcher
 
   def save(path)
     build_index
-    File.write(path, @lsi.to_json)
+    @lsi.storage = Classifier::Storage::File.new(path: path)
+    @lsi.save
     File.write("#{path}.authors", @authors.to_json)
   end
 
   def self.load(path)
     matcher = new
-    matcher.instance_variable_set(:@lsi, Classifier::LSI.from_json(File.read(path)))
+    storage = Classifier::Storage::File.new(path: path)
+    matcher.instance_variable_set(:@lsi, Classifier::LSI.load(storage: storage))
     matcher.instance_variable_set(
       :@authors,
       JSON.parse(File.read("#{path}.authors"), symbolize_names: true)

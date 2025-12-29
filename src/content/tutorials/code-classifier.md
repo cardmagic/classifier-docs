@@ -245,15 +245,24 @@ class CodeClassifier
 
   def save(path)
     build_index
-    File.write("#{path}_language.json", @language_lsi.to_json)
-    File.write("#{path}_purpose.json", @purpose_knn.to_json)
+
+    @language_lsi.storage = Classifier::Storage::File.new(path: "#{path}_language.json")
+    @language_lsi.save
+
+    @purpose_knn.storage = Classifier::Storage::File.new(path: "#{path}_purpose.json")
+    @purpose_knn.save
+
     File.write("#{path}_meta.json", { languages: @languages, purposes: @purposes }.to_json)
   end
 
   def self.load(path)
     classifier = new
-    classifier.instance_variable_set(:@language_lsi, Classifier::LSI.from_json(File.read("#{path}_language.json")))
-    classifier.instance_variable_set(:@purpose_knn, Classifier::KNN.from_json(File.read("#{path}_purpose.json")))
+
+    lsi_storage = Classifier::Storage::File.new(path: "#{path}_language.json")
+    knn_storage = Classifier::Storage::File.new(path: "#{path}_purpose.json")
+
+    classifier.instance_variable_set(:@language_lsi, Classifier::LSI.load(storage: lsi_storage))
+    classifier.instance_variable_set(:@purpose_knn, Classifier::KNN.load(storage: knn_storage))
 
     meta = JSON.parse(File.read("#{path}_meta.json"), symbolize_names: true)
     classifier.instance_variable_set(:@languages, meta[:languages])
