@@ -13,9 +13,10 @@ const guidesByCategory = guides.reduce((acc, guide) => {
 
 Object.values(guidesByCategory).forEach(arr => arr.sort((a, b) => a.data.order - b.data.order));
 
-const categoryOrder = ['start', 'bayes', 'lsi', 'knn', 'tfidf', 'logisticregression', 'persistence', 'extensions', 'production'];
+const categoryOrder = ['start', 'choosing', 'bayes', 'lsi', 'knn', 'tfidf', 'logisticregression', 'persistence', 'extensions', 'production'];
 const categoryLabels: Record<string, string> = {
   start: 'Start Here',
+  choosing: 'Choosing a Classifier',
   bayes: 'Bayesian Classifier',
   lsi: 'LSI (Semantic Analysis)',
   knn: 'k-Nearest Neighbors',
@@ -27,6 +28,7 @@ const categoryLabels: Record<string, string> = {
 };
 const categoryDescriptions: Record<string, string> = {
   start: 'Installation and quick start',
+  choosing: 'Compare classifiers and pick the right one for your use case',
   bayes: 'Naive Bayes classification for categorizing text',
   lsi: 'Latent Semantic Indexing for semantic search and similarity',
   knn: 'Instance-based classification with interpretable results',

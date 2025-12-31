@@ -16,7 +16,7 @@ const guides = defineCollection({
   schema: z.object({
     title: z.string(),
     description: z.string(),
-    category: z.enum(['start', 'bayes', 'lsi', 'knn', 'tfidf', 'logisticregression', 'persistence', 'extensions', 'production']),
+    category: z.enum(['start', 'choosing', 'bayes', 'lsi', 'knn', 'tfidf', 'logisticregression', 'persistence', 'extensions', 'production']),
     order: z.number(),
   }),
 });
