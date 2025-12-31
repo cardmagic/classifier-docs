@@ -114,6 +114,79 @@ knn.categories
 - When speed is critical
 - Very high-dimensional feature spaces
 
+## Training Data Size Limits
+
+kNN uses LSI internally for semantic similarity, which means it inherits LSI's O(n²) scaling problem. You cannot throw thousands of examples at kNN like you can with Bayes or Logistic Regression.
+
+### Why kNN Doesn't Scale
+
+```ruby
+# Bayes: O(n) training - each document updates word counts independently
+bayes = Classifier::Bayes.new("Spam", "Ham")
+50_000.times { |i| bayes.train("Spam", documents[i]) }  # Fast!
+
+# kNN: O(n²) - must rebuild LSI index, then compare all examples
+knn = Classifier::KNN.new(k: 5)
+50_000.times { |i| knn.add(spam: documents[i]) }  # Extremely slow!
+```
+
+### Practical Limits
+
+| Examples | Index Build | Classification | Notes |
+|----------|-------------|----------------|-------|
+| 200 | ~1s | Fast | Good for prototyping |
+| 500 | ~15s | Fast | Sweet spot for many apps |
+| 1,000 | ~60s | Slower | Approaching limits |
+| 2,000+ | Minutes | Much slower | Use Bayes instead |
+
+### Making the Most of Limited Data
+
+Since you can't use massive datasets, focus on quality:
+
+```ruby
+knn = Classifier::KNN.new(k: 5, weighted: true)
+
+# Good: Diverse, representative examples
+knn.add(
+  spam: [
+    "Buy now! Limited offer!",           # Urgency spam
+    "You've won $1,000,000!",             # Prize spam
+    "Click here for free stuff",          # Clickbait spam
+    "Enlarge your... portfolio today"     # Sketchy spam
+  ],
+  ham: [
+    "Meeting tomorrow at 3pm",            # Calendar
+    "Please review the attached doc",     # Work request
+    "Thanks for your help yesterday",     # Gratitude
+    "Running 10 min late"                 # Casual update
+  ]
+)
+
+# Bad: Redundant examples that don't add information
+knn.add(spam: [
+  "Buy now!", "Buy today!", "Buy immediately!",  # All same pattern
+  "Limited offer", "Limited time", "Limited deal" # All same pattern
+])
+```
+
+### When to Use Bayes Instead
+
+If you have more than ~1,000 training examples, Bayes is usually better:
+
+```ruby
+# For large datasets, Bayes trains in seconds and classifies instantly
+if training_data.size > 1000
+  classifier = Classifier::Bayes.new("Spam", "Ham")
+else
+  # kNN shines with smaller datasets where you need interpretability
+  classifier = Classifier::KNN.new(k: 5, weighted: true)
+end
+
+training_data.each { |cat, text| classifier.train(cat => text) }
+```
+
+See [LSI Basics: Training Data Size Limits](/docs/guides/lsi/basics#training-data-size-limits) for benchmarking techniques to find your optimal dataset size.
+
 ## kNN vs Bayes vs LSI
 
 | Feature | kNN | Bayes | LSI |

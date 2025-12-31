@@ -71,6 +71,89 @@ results = lsi.search "artificial intelligence methods", 2
 # => [:ml, :dl] - even though "AI" wasn't in the documents
 ```
 
+## Training Data Size Limits
+
+Unlike Bayes and Logistic Regression, LSI does **not** scale well with large datasets. The SVD computation that powers LSI has O(n²) complexity, meaning training time grows quadratically with document count.
+
+### Benchmark: Training Time vs Document Count
+
+| Documents | Build Time | Notes |
+|-----------|------------|-------|
+| 200 | ~1s | Interactive use |
+| 400 | ~10s | Acceptable |
+| 600 | ~30s | Getting slow |
+| 800 | ~75s | Patience required |
+| 1,000+ | Minutes | Consider alternatives |
+
+```ruby
+# This is fine for Bayes (50,000 docs trains in seconds)
+bayes = Classifier::Bayes.new("Positive", "Negative")
+50_000.times { |i| bayes.train("Positive", training_data[i]) }
+
+# But for LSI, 50,000 docs would take hours
+lsi = Classifier::LSI.new(auto_rebuild: false)
+# Don't do this - O(n²) means 50,000 docs is ~6,000x slower than 200 docs
+```
+
+### Why This Matters
+
+The bottleneck is `build_index`, which performs Singular Value Decomposition (SVD) on the entire term-document matrix. This is fundamentally different from Bayes/LogReg which process each document independently.
+
+```ruby
+# Bayes: O(n) - each document processed once
+bayes.train("Category", document)  # Fast, regardless of corpus size
+
+# LSI: O(n²) - all documents compared to all others
+lsi.build_index  # Slow, gets much slower with more docs
+```
+
+### Finding Your Optimal Training Size
+
+Run a quick benchmark to find the sweet spot for your hardware:
+
+```ruby
+require 'classifier'
+
+[100, 200, 300, 400, 500].each do |count|
+  lsi = Classifier::LSI.new(auto_rebuild: false)
+
+  count.times { |i| lsi.add_item("Document #{i} with some content", :"doc_#{i}") }
+
+  start = Time.now
+  lsi.build_index
+  elapsed = Time.now - start
+
+  puts "#{count} docs: #{elapsed.round(1)}s"
+  break if elapsed > 60  # Stop if we exceed your threshold
+end
+```
+
+### Strategies for Large Datasets
+
+1. **Sample your data**: Often 500-1000 well-chosen documents work as well as 10,000
+2. **Use Bayes/LogReg for classification**: Reserve LSI for similarity search
+3. **Incremental mode**: Add documents after initial build without full recompute
+4. **Hybrid approach**: Use Bayes for initial filtering, LSI for re-ranking top results
+
+```ruby
+# Hybrid: Fast Bayes filter + LSI re-ranking
+candidates = bayes.classify_top_n(query, 100)  # Fast: narrow to 100
+results = lsi.find_related(query, 10, within: candidates)  # Slow but small set
+```
+
+### Quality vs Quantity
+
+More data isn't always better with LSI. A focused corpus of 500 high-quality documents often outperforms 5,000 noisy ones:
+
+```ruby
+# Better: 500 carefully selected documents
+curated_docs = documents.select { |d| d.length > 100 && d.relevant? }
+curated_docs.first(500).each { |doc| lsi.add_item(doc) }
+
+# Worse: 5,000 documents including noise
+documents.each { |doc| lsi.add_item(doc) }  # Slow AND less accurate
+```
+
 ## Classification
 
 When you add items with categories, LSI can classify new content:
