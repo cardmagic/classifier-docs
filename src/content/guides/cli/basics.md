@@ -29,15 +29,15 @@ Classify text instantly using community-trained models:
 
 ```bash
 # Detect spam
-classifier classify "You won a free iPhone!" -r sms-spam-filter
+classifier -r sms-spam-filter "You won a free iPhone"
 # => spam
 
 # Analyze sentiment
-classifier classify "This movie was absolutely amazing!" -r imdb-sentiment
+classifier -r imdb-sentiment "This movie was absolutely amazing"
 # => positive
 
 # Detect emotions
-classifier classify "I'm so happy today!" -r emotion-detection
+classifier -r emotion-detection "I'm so happy today"
 # => joy
 ```
 
@@ -55,7 +55,7 @@ Build a custom classifier by training on your own data:
 
 ```bash
 # Train the positive category
-classifier train positive "I love this product!"
+classifier train positive "I love this product"
 classifier train positive "Excellent quality, highly recommend"
 
 # Train the negative category
@@ -63,7 +63,7 @@ classifier train negative "Terrible experience"
 classifier train negative "Complete waste of money"
 
 # Classify new text
-classifier classify "This is amazing!"
+classifier "This is amazing"
 # => positive
 ```
 
@@ -77,7 +77,7 @@ classifier train positive reviews/good/*.txt
 classifier train negative reviews/bad/*.txt
 
 # Classify new text
-classifier classify "Great product, highly recommend"
+classifier "Great product, highly recommend"
 # => positive
 ```
 
@@ -98,7 +98,7 @@ Organize training data in category folders:
 classifier train-dir training_data/
 
 # Categories are automatically detected from folder names
-classifier classify "Buy cheap products now!"
+classifier "Buy cheap products now"
 # => spam
 ```
 
@@ -114,7 +114,7 @@ classifier save my-sentiment.dat
 
 # Load and use later
 classifier load my-sentiment.dat
-classifier classify "This is wonderful"
+classifier "This is wonderful"
 # => positive
 ```
 
@@ -124,15 +124,15 @@ Get results in different formats:
 
 ```bash
 # Plain text (default)
-classifier classify "Hello world" -r imdb-sentiment
+classifier -r imdb-sentiment "Hello world"
 # => positive
 
 # JSON output for scripting
-classifier classify "Hello world" -r imdb-sentiment --json
+classifier -r imdb-sentiment --json "Hello world"
 # => {"category": "positive", "scores": {"positive": -2.3, "negative": -8.1}}
 
 # Verbose output with confidence scores
-classifier classify "Hello world" -r imdb-sentiment -v
+classifier -r imdb-sentiment -v "Hello world"
 # => positive (confidence: 0.94)
 ```
 
@@ -140,8 +140,8 @@ classifier classify "Hello world" -r imdb-sentiment -v
 
 | Command | Description |
 |---------|-------------|
-| `classifier classify TEXT` | Classify text using the current model |
-| `classifier classify TEXT -r MODEL` | Classify using a pre-trained model |
+| `classifier TEXT` | Classify text using the current model |
+| `classifier -r MODEL TEXT` | Classify using a pre-trained model |
 | `classifier train CATEGORY TEXT` | Train a category with text |
 | `classifier train CATEGORY FILE...` | Train from files |
 | `classifier train-dir DIR` | Train from directory structure |
@@ -155,8 +155,8 @@ classifier classify "Hello world" -r imdb-sentiment -v
 
 ```bash
 # Use a specific classifier algorithm
-classifier classify "Text" --algorithm bayes     # Naive Bayes (default)
-classifier classify "Text" --algorithm lsi       # Latent Semantic Indexing
+classifier "Text" --algorithm bayes     # Naive Bayes (default)
+classifier "Text" --algorithm lsi       # Latent Semantic Indexing
 
 # Specify language for stemming
 classifier train positive "Excellent produit" --language fr
@@ -171,16 +171,16 @@ The CLI works well in Unix pipelines:
 
 ```bash
 # Classify from stdin
-echo "This product is amazing" | classifier classify -r imdb-sentiment
+echo "This product is amazing" | classifier -r imdb-sentiment
 
 # Batch classify a file
 cat reviews.txt | while read line; do
-  classifier classify "$line" -r imdb-sentiment
+  classifier -r imdb-sentiment "$line"
 done
 
 # Filter spam from a file
 cat emails.txt | while read line; do
-  result=$(classifier classify "$line" -r sms-spam-filter --json)
+  result=$(classifier -r sms-spam-filter --json "$line")
   if [ "$(echo $result | jq -r .category)" = "ham" ]; then
     echo "$line"
   fi
