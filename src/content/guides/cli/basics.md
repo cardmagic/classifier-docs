@@ -81,88 +81,68 @@ classifier "Great product, highly recommend"
 # => positive
 ```
 
-### Train from Directories
+## Model Files
 
-Organize training data in category folders:
-
-```bash
-# Directory structure:
-# training_data/
-#   spam/
-#     email1.txt
-#     email2.txt
-#   ham/
-#     email1.txt
-#     email2.txt
-
-classifier train-dir training_data/
-
-# Categories are automatically detected from folder names
-classifier "Buy cheap products now"
-# => spam
-```
-
-## Saving and Loading Models
-
-Persist your trained classifier to disk:
+The CLI automatically saves your trained model to `./classifier.json`. Use the `-f` flag to specify a different file:
 
 ```bash
-# Train and save
-classifier train positive "Great stuff"
-classifier train negative "Terrible stuff"
-classifier save my-sentiment.dat
+# Train and save to custom file
+classifier -f my-sentiment.json train positive "Great stuff"
+classifier -f my-sentiment.json train negative "Terrible stuff"
 
-# Load and use later
-classifier load my-sentiment.dat
-classifier "This is wonderful"
+# Use the model later
+classifier -f my-sentiment.json "This is wonderful"
 # => positive
 ```
 
-## Output Formats
+## Showing Probabilities
 
-Get results in different formats:
+Use `-p` to see probability scores:
 
 ```bash
-# Plain text (default)
-classifier -r imdb-sentiment "Hello world"
-# => positive
-
-# JSON output for scripting
-classifier -r imdb-sentiment --json "Hello world"
-# => {"category": "positive", "scores": {"positive": -2.3, "negative": -8.1}}
-
-# Verbose output with confidence scores
-classifier -r imdb-sentiment -v "Hello world"
-# => positive (confidence: 0.94)
+classifier -r imdb-sentiment -p "Hello world"
+# => positive (0.94)
 ```
 
-## Common Commands
+## Commands
 
 | Command | Description |
 |---------|-------------|
 | `classifier TEXT` | Classify text using the current model |
-| `classifier -r MODEL TEXT` | Classify using a pre-trained model |
-| `classifier train CATEGORY TEXT` | Train a category with text |
-| `classifier train CATEGORY FILE...` | Train from files |
-| `classifier train-dir DIR` | Train from directory structure |
-| `classifier save FILE` | Save current model to file |
-| `classifier load FILE` | Load model from file |
-| `classifier models` | List available pre-trained models |
-| `classifier info` | Show current model info |
-| `classifier reset` | Clear current training |
+| `classifier -r MODEL TEXT` | Classify using a remote model |
+| `classifier train CATEGORY [FILES...]` | Train a category from files or stdin |
+| `classifier info` | Show model information |
+| `classifier fit` | Fit the model (logistic regression) |
+| `classifier search QUERY` | Semantic search (LSI only) |
+| `classifier related ITEM` | Find related documents (LSI only) |
+| `classifier models` | List models in registry |
+| `classifier pull MODEL` | Download model from registry |
+| `classifier push FILE` | Contribute model to registry |
 
 ## Options
 
 ```bash
-# Use a specific classifier algorithm
-classifier "Text" --algorithm bayes     # Naive Bayes (default)
-classifier "Text" --algorithm lsi       # Latent Semantic Indexing
+# Model file (default: ./classifier.json)
+classifier -f my-model.json "Text"
 
-# Specify language for stemming
-classifier train positive "Excellent produit" --language fr
+# Classifier type
+classifier -m bayes "Text"    # Naive Bayes (default)
+classifier -m lsi "Text"      # Latent Semantic Indexing
+classifier -m knn "Text"      # K-Nearest Neighbors
+classifier -m lr "Text"       # Logistic Regression
 
-# Disable stemming
-classifier train positive "Technical terms" --no-stemmer
+# Show probabilities
+classifier -p "Text"
+
+# KNN options
+classifier -m knn -k 10 "Text"           # Number of neighbors
+classifier -m knn --weighted "Text"      # Distance-weighted voting
+
+# Logistic regression options
+classifier -m lr --learning-rate 0.01 --max-iterations 200 "Text"
+
+# Quiet mode
+classifier -q "Text"
 ```
 
 ## Piping and Scripting
@@ -180,8 +160,8 @@ done
 
 # Filter spam from a file
 cat emails.txt | while read line; do
-  result=$(classifier -r sms-spam-filter --json "$line")
-  if [ "$(echo $result | jq -r .category)" = "ham" ]; then
+  result=$(classifier -r sms-spam-filter "$line")
+  if [ "$result" = "ham" ]; then
     echo "$line"
   fi
 done > clean_emails.txt
