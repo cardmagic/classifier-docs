@@ -3,7 +3,7 @@ title: "Real-time Classification Pipeline"
 description: "Build a scalable pipeline for classifying streaming data with background jobs, Redis caching, and concurrent processing."
 difficulty: advanced
 classifiers: [bayes, lsi]
-order: 14
+order: 15
 ---
 
 # Real-time Classification Pipeline

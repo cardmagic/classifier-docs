@@ -3,7 +3,7 @@ title: "Streaming Training"
 description: "Train classifiers on large datasets with memory-efficient streaming, batch processing with progress tracking, and checkpoint-based resumable training."
 difficulty: intermediate
 classifiers: [bayes, lsi, knn, tfidf, logisticregression]
-order: 11
+order: 12
 ---
 
 # Streaming Training
