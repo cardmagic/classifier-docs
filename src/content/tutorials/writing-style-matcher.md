@@ -3,7 +3,7 @@ title: "Writing Style Matcher"
 description: "Build a tool that analyzes writing style and finds similar authors using LSI semantic analysis."
 difficulty: intermediate
 classifiers: [lsi]
-order: 9
+order: 10
 ---
 
 # Writing Style Matcher

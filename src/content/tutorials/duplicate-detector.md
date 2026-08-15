@@ -3,7 +3,7 @@ title: "Duplicate Ticket Detector"
 description: "Build a system to detect duplicate support tickets using LSI semantic similarity and TF-IDF weighting."
 difficulty: intermediate
 classifiers: [lsi, tfidf]
-order: 8
+order: 9
 ---
 
 # Duplicate Ticket Detector
