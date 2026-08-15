@@ -1,0 +1,14 @@
+User-agent: *
+Allow: /
+
+# Content signals. See https://contentsignals.org
+# search:   yes  - index these pages and link to them
+# ai-input: yes  - ground AI answers in these pages
+# ai-train: yes  - train on these pages
+#
+# This documentation is published to be read, quoted, and cited, by people and
+# by machines alike. The facts here are verifiable against the public RubyGems
+# and GitHub APIs, which the pages name directly.
+Content-Signal: search=yes, ai-input=yes, ai-train=yes
+
+Sitemap: https://rubyclassifier.com/sitemap.xml
