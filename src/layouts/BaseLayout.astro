@@ -9,6 +9,24 @@ interface Props {
 }
 
 const { title, description = "Text classification for Ruby made simple. Bayesian classification and semantic analysis with one gem." } = Astro.props;
+
+const SITE = 'https://rubyclassifier.com';
+const canonical = new URL(Astro.url.pathname, SITE).href.replace(/(.)\/$/, '$1');
+
+const softwareSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareSourceCode',
+  name: 'classifier',
+  description:
+    'Ruby text classification and semantic analysis: Naive Bayes, Latent Semantic Indexing, k-Nearest Neighbors, Logistic Regression, and TF-IDF vectorization, with the classifier and keywords command line tools.',
+  programmingLanguage: 'Ruby',
+  codeRepository: 'https://github.com/cardmagic/classifier',
+  url: SITE,
+  license: 'https://opensource.org/licenses/LGPL-2.1',
+  softwareVersion: '2.7.0',
+  dateModified: '2026-08-15',
+  author: { '@type': 'Person', name: 'Lucas Carlson' },
+};
 ---
 
 <!doctype html>
@@ -17,8 +35,10 @@ const { title, description = "Text classification for Ruby made simple. Bayesian
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <title>{title}</title>
+    <script type="application/ld+json" is:inline set:html={JSON.stringify(softwareSchema)} />
   </head>
   <body class="min-h-screen bg-white text-gray-900 flex flex-col">
     <Header />

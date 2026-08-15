@@ -18,6 +18,7 @@ const guides = defineCollection({
     description: z.string(),
     category: z.enum(['start', 'choosing', 'bayes', 'lsi', 'knn', 'tfidf', 'logisticregression', 'persistence', 'extensions', 'production', 'cli']),
     order: z.number(),
+    faq: z.array(z.object({ question: z.string(), answer: z.string() })).optional(),
   }),
 });
 
