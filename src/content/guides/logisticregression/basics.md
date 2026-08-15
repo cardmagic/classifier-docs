@@ -184,10 +184,15 @@ classifier.train(
   politics: ['Senate passes bill', 'Election results'],
   entertainment: ['Oscar nominations', 'New movie premiere']
 )
+classifier.fit
 
 probs = classifier.probabilities 'Breaking: Major tech company IPO'
-# => {"Tech" => 0.72, "Sports" => 0.05, "Politics" => 0.15, "Entertainment" => 0.08}
+# => {"Tech" => 0.25, "Sports" => 0.2, "Politics" => 0.25, "Entertainment" => 0.3}
 ```
+
+The probabilities always sum to 1.0. Two documents per category is far too
+little to separate them, which is why the spread here stays almost flat. Real
+training data sharpens it.
 
 ## Thread Safety
 

@@ -8,7 +8,7 @@ order: 5
 
 # Keyword Extractor
 
-Build a tool that automatically extracts the most important keywords from documents. TF-IDF identifies terms that are distinctive to each document—perfect for SEO, content tagging, and document summarization.
+Build a tool that automatically extracts the most important keywords from documents. TF-IDF identifies terms that are distinctive to each document, which suits SEO, content tagging, and document summaries.
 
 ## What You'll Learn
 

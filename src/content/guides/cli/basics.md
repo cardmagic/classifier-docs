@@ -7,7 +7,7 @@ order: 1
 
 # Command Line Interface
 
-The classifier gem includes a powerful CLI that lets you classify text instantly with pre-trained models or train your own classifiers—no coding required.
+The classifier gem includes a powerful CLI that lets you classify text instantly with pre-trained models or train your own classifiers. No code required.
 
 ## Installation
 
@@ -167,8 +167,83 @@ cat emails.txt | while read line; do
 done > clean_emails.txt
 ```
 
+## The keywords Command
+
+The gem installs a second command, `keywords`. It scores the terms of a text
+with TF-IDF and prints `term:score` pairs in descending order of score.
+
+Unlike `classifier`, it ships no pre-trained models, so build a vocabulary
+first. Every later command reads that model:
+
+```bash
+# Each line of each file becomes a separate document
+keywords fit corpus/*.txt
+# => Saved to "/path/to/keywords.json"
+```
+
+Then score any text:
+
+```bash
+# Score a raw string
+keywords "Ruby is a programming language"
+# => language:0.58 programming:0.58 ruby:0.58
+
+# Score a file
+keywords extract article.txt
+
+# Pipe from stdin
+curl -s https://example.com/article | keywords extract
+
+# Top 5 terms only
+keywords -n 5 "long document with many terms..."
+```
+
+Inspect the model:
+
+```bash
+keywords info
+# => Documents: 1,234
+# => Vocabulary: 5,678
+# => Min DF: 1
+# => Max DF: 1.0
+```
+
+Tune the vocabulary during the fit:
+
+```bash
+keywords fit --min-df 2 --max-df 0.85 --ngram 1,2 corpus/*.txt
+```
+
+`--min-df` drops a term that too few documents hold, `--max-df` drops a term
+that too many hold, and `--ngram MIN,MAX` indexes phrases as well as single
+words. An n-gram label joins its parts with a space, as in
+`machine learning:0.35`, so parse the output on the `:` separator rather than
+on whitespace.
+
+Output maps stems back to whole words, so a model built from `programming`
+prints `programming`, not `program`.
+
+### keywords options
+
+| Option | Meaning |
+|--------|---------|
+| `-m`, `--model FILE` | Model file (default: `./keywords.json`) |
+| `-n`, `--top N` | Print the top N terms only |
+| `-q` | Suppress the `Saved to` line from `fit` |
+| `--min-df N` | Minimum document frequency, as a count |
+| `--max-df N` | Maximum document frequency ratio, 0.0 to 1.0 |
+| `--ngram MIN,MAX` | N-gram range (default: `1,1`) |
+
+A usage error exits 2 and any other error exits 1, so a script can tell the two
+apart:
+
+```bash
+keywords fit corpus/*.txt || echo "fit failed with $?"
+```
+
 ## Next Steps
 
 - [Bayes Basics](/docs/guides/bayes/basics) - Understand the classifier algorithm
+- [TF-IDF Basics](/docs/guides/tfidf/basics) - The vectorizer behind `keywords`
 - [Persistence](/docs/guides/persistence/basics) - Save and load classifiers in Ruby
 - [Spam Filter Tutorial](/docs/tutorials/spam-filter) - Build a complete spam filter

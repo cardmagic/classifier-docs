@@ -340,7 +340,7 @@ Suggested: docs: update the installation guide
 Top scores: Docs:37.6%, Chore:15.8%, Build:8.9%
 ```
 
-**Note:** With 10 commit types, confidence scores are naturally lower since probability is distributed across more categories. The classifier still picks the correct type—focus on whether it's the highest-scoring category rather than absolute percentages.
+**Note:** With 10 commit types, confidence scores are naturally lower since probability is distributed across more categories. The classifier still picks the correct type. Look at whether it's the highest-scoring category rather than absolute percentages.
 
 ## Analyze a Real Repository
 
