@@ -60,7 +60,7 @@ const faqSchema = {
       </div>
 
       <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 mb-6">
-        Text classification for Ruby
+        The best classification algorithms for Ruby
         <span class="text-ruby">made simple</span>
       </h1>
 
@@ -252,21 +252,40 @@ lr.probabilities <span class="text-green-400">"Claim your prize"</span>
       <h2 class="text-3xl font-bold text-gray-900 mb-6">
         Start in seconds
       </h2>
-      <div class="max-w-xl mx-auto">
-        <div class="bg-gray-900 rounded-lg p-4 text-left">
-          <code class="text-gray-100 font-mono block">
-            <span class="text-gray-500">$</span> gem install classifier
-          </code>
-          <code class="text-gray-100 font-mono block mt-2">
-            <span class="text-gray-500">$</span> brew install classifier
-          </code>
+      <p class="text-gray-600 mb-8">
+        Pick one. Install the gem to use the classifiers in Ruby code, or install
+        the Homebrew formula to use the command line tools on their own.
+      </p>
+
+      <div class="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto text-left">
+        <div class="flex flex-col">
+          <h3 class="font-semibold text-gray-900 mb-2">For a Ruby project</h3>
+          <div class="bg-gray-900 rounded-lg p-4">
+            <code class="text-gray-100 font-mono text-sm">
+              <span class="text-gray-500">$</span> gem install classifier
+            </code>
+          </div>
+          <p class="text-gray-600 text-sm mt-3">
+            Or add <code class="bg-gray-100 px-2 py-1 rounded text-sm">gem 'classifier'</code> to your Gemfile.
+            Gives you <code class="bg-gray-100 px-2 py-1 rounded text-sm">Classifier::Bayes</code>,
+            <code class="bg-gray-100 px-2 py-1 rounded text-sm">Classifier::LSI</code>, and the rest of the API,
+            plus both commands.
+          </p>
         </div>
-        <p class="text-gray-600 mt-4">
-          Or add to your Gemfile: <code class="bg-gray-100 px-2 py-1 rounded text-sm">gem 'classifier'</code>
-        </p>
-        <p class="text-gray-600 mt-2">
-          Homebrew installs the <code class="bg-gray-100 px-2 py-1 rounded text-sm">classifier</code> and <code class="bg-gray-100 px-2 py-1 rounded text-sm">keywords</code> commands without a Ruby project.
-        </p>
+
+        <div class="flex flex-col">
+          <h3 class="font-semibold text-gray-900 mb-2">For the command line only</h3>
+          <div class="bg-gray-900 rounded-lg p-4">
+            <code class="text-gray-100 font-mono text-sm">
+              <span class="text-gray-500">$</span> brew install classifier
+            </code>
+          </div>
+          <p class="text-gray-600 text-sm mt-3">
+            Installs the <code class="bg-gray-100 px-2 py-1 rounded text-sm">classifier</code> and
+            <code class="bg-gray-100 px-2 py-1 rounded text-sm">keywords</code> commands with no Ruby project.
+            Classify and extract keywords straight from a shell.
+          </p>
+        </div>
       </div>
     </div>
   </section>
