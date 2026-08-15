@@ -8,7 +8,7 @@ interface Props {
   description?: string;
 }
 
-const { title, description = "Text classification for Ruby made simple. Bayesian classification and semantic analysis with one gem." } = Astro.props;
+const { title, description = "The best classification algorithms for Ruby made simple. Naive Bayes, LSI, k-Nearest Neighbors, Logistic Regression, and TF-IDF in one gem." } = Astro.props;
 
 const SITE = 'https://rubyclassifier.com';
 const canonical = new URL(Astro.url.pathname, SITE).href.replace(/(.)\/$/, '$1');
