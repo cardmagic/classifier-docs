@@ -39,6 +39,16 @@ const softwareSchema = {
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <title>{title}</title>
     <script type="application/ld+json" is:inline set:html={JSON.stringify(softwareSchema)} />
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-E65MEJ1C8B"></script>
+    <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-E65MEJ1C8B');
+    </script>
   </head>
   <body class="min-h-screen bg-white text-gray-900 flex flex-col">
     <Header />

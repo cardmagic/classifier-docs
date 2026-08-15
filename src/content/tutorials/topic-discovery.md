@@ -3,7 +3,7 @@ title: "Topic Discovery with TF-IDF and LSI"
 description: "Automatically discover topics in unlabeled documents using TF-IDF, then use LSI for semantic classification of new content."
 difficulty: intermediate
 classifiers: [tfidf, lsi]
-order: 12
+order: 13
 ---
 
 # Topic Discovery with TF-IDF and LSI

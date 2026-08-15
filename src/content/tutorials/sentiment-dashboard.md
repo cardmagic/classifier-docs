@@ -3,7 +3,7 @@ title: "Sentiment Analysis Dashboard"
 description: "Build a real-time sentiment dashboard to analyze product reviews with confidence scoring."
 difficulty: intermediate
 classifiers: [bayes]
-order: 6
+order: 7
 ---
 
 # Sentiment Analysis Dashboard

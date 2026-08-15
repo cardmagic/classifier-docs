@@ -3,7 +3,7 @@ title: "Chatbot Intent Detection"
 description: "Build an intent classifier for chatbots that understands user messages and routes to appropriate handlers."
 difficulty: intermediate
 classifiers: [knn]
-order: 10
+order: 11
 ---
 
 # Chatbot Intent Detection
