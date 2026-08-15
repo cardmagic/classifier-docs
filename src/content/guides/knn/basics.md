@@ -7,7 +7,7 @@ order: 1
 
 # k-Nearest Neighbors Basics
 
-k-Nearest Neighbors (kNN) is an instance-based classifier that stores examples and classifies new text by finding the most similar ones. Unlike Bayes, there's no training phase—just add examples and classify.
+k-Nearest Neighbors (kNN) is an instance-based classifier that stores examples and classifies new text by finding the most similar ones. Unlike Bayes, there is no training phase. You add examples and classify.
 
 ## How It Works
 
@@ -196,7 +196,7 @@ See [LSI Basics: Training Data Size Limits](/docs/guides/lsi/basics#training-dat
 | Interpretable | Yes (see neighbors) | No | No |
 | Speed | Slower | Very fast | Medium |
 
-**Why the size difference?** Bayes stores aggregate statistics—adding 10,000 documents just increments counters. kNN stores every example and compares against all of them during classification.
+**Why the size difference?** Bayes stores aggregate statistics, so adding 10,000 documents only increments counters. kNN stores every example and compares against all of them during classification.
 
 ## Choosing k
 

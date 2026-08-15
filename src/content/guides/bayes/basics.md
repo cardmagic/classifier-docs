@@ -114,16 +114,23 @@ percentages = normalized.transform_values { |v| (v / total * 100).round(1) }
 
 ## Configuration Options
 
+The constructor takes one option, `min_word_length`. The tokenizer drops any
+word shorter than that value, which defaults to 3.
+
 ```ruby
-# Enable automatic stemming (on by default)
-classifier = Classifier::Bayes.new :a, :b, enable_stemmer: true
-
-# Use custom language for stemming
-classifier = Classifier::Bayes.new :a, :b, language: 'fr'
-
-# Disable threshold (classify everything, even low confidence)
-classifier = Classifier::Bayes.new :a, :b, enable_threshold: false
+# Keep two-letter words such as "go" and "db"
+classifier = Classifier::Bayes.new :a, :b, min_word_length: 2
 ```
+
+Set the default for every classifier at startup:
+
+```ruby
+Classifier.configure do |config|
+  config.min_word_length = 2
+end
+```
+
+Stemming is always on, and it uses the Porter algorithm for English.
 
 ## Streaming & Batch Training
 

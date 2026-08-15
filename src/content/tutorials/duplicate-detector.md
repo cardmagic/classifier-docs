@@ -8,7 +8,7 @@ order: 8
 
 # Duplicate Ticket Detector
 
-Support teams waste hours on duplicate tickets. Build a detector that finds semantically similar tickets—even when they use different words to describe the same problem.
+Support teams waste hours on duplicate tickets. Build a detector that finds semantically similar tickets, even when they use different words to describe the same problem.
 
 ## What You'll Learn
 

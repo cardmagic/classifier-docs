@@ -416,7 +416,7 @@ end
 ## Best Practices
 
 1. **Train with domain-specific data**: Generic sentiment doesn't capture product-specific language
-2. **Handle neutral carefully**: Many reviews are mixed—consider a wider neutral band
+2. **Handle neutral carefully**: Many reviews are mixed, so consider a wider neutral band
 3. **Use confidence thresholds**: Only flag high-confidence negatives to reduce noise
 4. **Retrain periodically**: Language and product sentiment drift over time
 

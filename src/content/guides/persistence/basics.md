@@ -116,10 +116,14 @@ classifier.train(a: "some text")
 classifier.dirty?
 # => true
 
+classifier.storage = Classifier::Storage::File.new(path: "model.json")
 classifier.save
 classifier.dirty?
 # => false
 ```
+
+`save` needs a storage backend. Without one it raises `ArgumentError`. Use
+`save_to_file(path)` to write a file directly instead.
 
 ### Reloading
 

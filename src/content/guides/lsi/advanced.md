@@ -11,21 +11,38 @@ This guide covers advanced LSI features for production use: incremental updates,
 
 ## Incremental LSI
 
-Standard LSI rebuilds the entire SVD when you add documents—expensive for large indices. Incremental mode uses Brand's algorithm to add documents in O(k²) time instead of O(mn²):
+Standard LSI rebuilds the entire SVD when you add documents, which is expensive for a large index. Incremental mode uses Brand's algorithm to add documents in O(k²) time instead of O(mn²):
 
 ```ruby
-lsi = Classifier::LSI.new(incremental: true)
+lsi = Classifier::LSI.new(incremental: true, auto_rebuild: false)
 
-# Add initial documents and build the index
-lsi.add(tech: ["Ruby is elegant", "Python is popular"])
+# Add the whole starting corpus, then build the index once
+lsi.add(tech: [
+  "Ruby is an elegant programming language for web development",
+  "Python is a popular programming language for data science",
+  "JavaScript runs in browsers and powers modern web applications",
+  "Java is a compiled language used for enterprise backend systems",
+  "Rust provides memory safety without a garbage collector runtime"
+])
 lsi.build_index
 
-# These use Brand's algorithm—no full rebuild
-lsi.add(tech: "Go is fast")
-lsi.add(tech: "Rust is safe")
+lsi.incremental_enabled?
+# => true
+
+# This uses Brand's algorithm. No full rebuild.
+lsi.add(tech: "Go is a fast compiled language for backend systems")
 ```
 
 After the first `build_index`, new documents are projected onto the existing semantic space and the SVD is updated incrementally.
+
+**Turn `auto_rebuild` off.** It defaults to on, and incremental mode never
+starts while it is on. Each `add` rebuilds at once, so the index builds from the
+first two documents, and the next `add` measures its vocabulary growth against
+that tiny baseline. The growth trips the fallback threshold below, incremental
+mode switches off, and a later `build_index` cannot turn it back on.
+
+Incremental mode also needs the starting corpus in place before the first
+build, because `build_index` stores the U matrix that later updates need.
 
 ### When to Use Incremental Mode
 
@@ -101,7 +118,7 @@ dims_90 = spectrum.find_index { |e| e[:cumulative_percentage] >= 0.90 }
 puts "#{dims_90 + 1} dimensions capture 90% of variance"
 ```
 
-This helps tune `max_rank`—if 20 dimensions capture 95% of variance, setting `max_rank: 25` gives good results with minimal overhead.
+This helps tune `max_rank`. If 20 dimensions capture 95% of the variance, setting `max_rank: 25` gives good results with minimal overhead.
 
 ## Mode Management
 
@@ -149,7 +166,7 @@ lsi.incremental_enabled?  # => true
 # Add document with many new words
 lsi.add(tech: "Quantum computing uses qubits for superposition entanglement")
 
-# Vocabulary grew significantly—fell back to full rebuild
+# Vocabulary grew too far. LSI fell back to a full rebuild.
 lsi.incremental_enabled?  # => false
 ```
 
